@@ -1,36 +1,28 @@
 {
   "schemaVersion": 1,
-  "id": "euphonium",
+  "id": "${modId}",
   "version": "${version}",
-  "name": "Euphonium",
-  "description": "Ambient sounds suitable for vanilla minecraft",
+  "name": "${modName}",
+  "description": "${modDescription}",
   "authors": [
-    "svenhjol",
-    "Sisby folk"
-
+    "${authors}"
   ],
   "contact": {
-    "homepage": "https://modrinth.com/mod/euphonium",
-    "issues": "https://github.com/sisby-folk/euphonium/issues",
-    "sources": "https://github.com/sisby-folk/euphonium"
+    "homepage": "${homepage}",
+    "issues": "${issues}",
+    "sources": "${sources}"
   },
-  "license": "LGPL-3.0-only",
-  "icon": "assets/euphonium/icon.png",
-  "environment": "*",
+  "license": "${license}",
+  "icon": "assets/${modId}/icon.png",
+  "accessWidener": "${modId}.accesswidener",
   "entrypoints": {
     "client": [
       "folk.sisby.euphonium.EuphoniumClient"
     ]
   },
   "depends": {
-    "fabricloader": ">=0.14.9",
+    "fabricloader": ">=${fl}",
     "minecraft": ">=${mc}",
-    "java": ">=17"
-  },
-  "accessWidener": "euphonium.accesswidener",
-  "jars": [
-    {
-      "file": "META-INF/jars/kaleido-config-${kaleidoConfig}.jar"
-    }
-  ]
+    "fabric-api": ">=${fapi}"
+  }
 }
