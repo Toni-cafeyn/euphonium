@@ -7,8 +7,8 @@ import folk.sisby.euphonium.sound.ISoundType;
 import folk.sisby.euphonium.sound.LoopedWorldSound;
 import folk.sisby.euphonium.sound.SoundHandler;
 import folk.sisby.euphonium.sound.WorldSound;
-import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 public class CaveDrone implements ISoundType<WorldSound> {
@@ -24,14 +24,14 @@ public class CaveDrone implements ISoundType<WorldSound> {
         handler.getSounds().add(new LoopedWorldSound(handler.getPlayer()) {
             @Override
             public boolean isValidSituationCondition() {
-                BlockPos pos = player.blockPosition();
-                int light = level.getMaxLocalRawBrightness(pos);
+                BlockPos pos = player.getBlockPos();
+                int light = level.getLightLevel(pos);
 
-                if (!EuphoniumWorld.VALID_CAVE_DIMENSIONS.contains(level.dimension().location())) {
+                if (!EuphoniumWorld.VALID_CAVE_DIMENSIONS.contains(level.getRegistryKey().getValue())) {
                     return false;
                 }
 
-                if (!level.canSeeSkyFromBelowWater(pos) && pos.getY() <= player.level.getSeaLevel()) {
+                if (!level.isSkyVisibleAllowingSea(pos) && pos.getY() <= player.world.getSeaLevel()) {
                     return pos.getY() <= EuphoniumClient.CONFIG.worldAmbience.caveDroneDepth || light <= EuphoniumClient.CONFIG.worldAmbience.caveLightLevel;
                 }
 
@@ -40,7 +40,7 @@ public class CaveDrone implements ISoundType<WorldSound> {
 
             @Override
             public boolean isValidPlayerCondition() {
-                return !player.isUnderWater();
+                return !player.isSubmergedInWater();
             }
 
             @Nullable

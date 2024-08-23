@@ -7,9 +7,9 @@
  import folk.sisby.euphonium.sound.RepeatedWorldSound;
  import folk.sisby.euphonium.sound.SoundHandler;
  import folk.sisby.euphonium.sound.WorldSound;
- import net.minecraft.sounds.SoundEvent;
- import net.minecraft.world.level.Level;
- import org.jetbrains.annotations.Nullable;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
  public class High implements ISoundType<WorldSound> {
      public static SoundEvent SOUND;
@@ -24,15 +24,15 @@
          handler.getSounds().add(new RepeatedWorldSound(handler.getPlayer()) {
              @Override
              public boolean isValidSituationCondition() {
-                 int top = level.getMaxBuildHeight() > 256 ? 200 : 150;
+                 int top = level.getTopY() > 256 ? 200 : 150;
 
-                 return level.dimension() == Level.OVERWORLD
-                     && player.blockPosition().getY() > top;
+                 return level.getRegistryKey() == World.OVERWORLD
+                     && player.getBlockPos().getY() > top;
              }
 
              @Override
              public boolean isValidPlayerCondition() {
-                 return level.dimension() == Level.OVERWORLD
+                 return level.getRegistryKey() == World.OVERWORLD
                      && WorldHelper.isOutside(player);
              }
 

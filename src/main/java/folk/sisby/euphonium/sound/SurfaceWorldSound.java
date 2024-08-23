@@ -2,10 +2,10 @@ package folk.sisby.euphonium.sound;
 
 import folk.sisby.euphonium.EuphoniumClient;
 import folk.sisby.euphonium.helper.WorldHelper;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.entity.player.PlayerEntity;
 
 public abstract class SurfaceWorldSound extends RepeatedWorldSound {
-    protected SurfaceWorldSound(Player player) {
+    protected SurfaceWorldSound(PlayerEntity player) {
         super(player);
     }
 
@@ -16,7 +16,7 @@ public abstract class SurfaceWorldSound extends RepeatedWorldSound {
 
     @Override
     public double getVolumeScaling() {
-        var cullDistance = EuphoniumClient.CONFIG.worldAmbience.cullSoundAboveGround;
+        int cullDistance = EuphoniumClient.CONFIG.worldAmbience.cullSoundAboveGround;
 
         if (cullDistance > 0) {
             return super.getVolumeScaling() * Math.max(0.0D, 1.0D - (WorldHelper.distanceFromGround(getPlayer(), cullDistance) / cullDistance));

@@ -19,19 +19,19 @@ import folk.sisby.euphonium.sounds.biome.Taiga;
 import folk.sisby.euphonium.sounds.biome.TheEnd;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EuphoniumBiome {
-	public static List<ResourceLocation> VALID_DIMENSIONS = new ArrayList<>();
+	public static List<Identifier> VALID_DIMENSIONS = new ArrayList<>();
 	private static final ISoundType<BiomeSound> BADLANDS = new Badlands();
 	private static final ISoundType<BiomeSound> BEACH = new Beach();
 	private static final ISoundType<BiomeSound> DESERT = new Desert();
@@ -48,36 +48,35 @@ public class EuphoniumBiome {
 	private static final ISoundType<BiomeSound> THE_END = new TheEnd();
 	private static Handler handler;
 
-	@SuppressWarnings("deprecation")
 	public static void init() {
 		if (EuphoniumClient.CONFIG.biomeAmbienceEnabled) {
 			ClientEntityEvents.ENTITY_LOAD.register(EuphoniumBiome::handleClientEntityJoin);
 			ClientEntityEvents.ENTITY_UNLOAD.register(EuphoniumBiome::handleClientEntityLeave);
 			ClientTickEvents.END_CLIENT_TICK.register(EuphoniumBiome::handleClientTick);
-			EuphoniumClient.CONFIG.biomeAmbience.dimensions.forEach(dim -> VALID_DIMENSIONS.add(new ResourceLocation(dim)));
+			EuphoniumClient.CONFIG.biomeAmbience.dimensions.forEach(dim -> VALID_DIMENSIONS.add(new Identifier(dim)));
 		}
 	}
 
-	private static void handleClientTick(Minecraft client) {
+	private static void handleClientTick(MinecraftClient client) {
 		if (handler != null && !client.isPaused()) {
 			handler.tick();
 		}
 	}
 
-	private static void handleClientEntityLeave(Entity entity, Level level) {
-		if (entity instanceof LocalPlayer && handler != null) {
+	private static void handleClientEntityLeave(Entity entity, World level) {
+		if (entity instanceof ClientPlayerEntity && handler != null) {
 			handler.stop();
 		}
 	}
 
-	private static void handleClientEntityJoin(Entity entity, Level level) {
-		if (entity instanceof LocalPlayer player) {
+	private static void handleClientEntityJoin(Entity entity, World level) {
+		if (entity instanceof ClientPlayerEntity player) {
 			trySetupSoundHandler(player);
 		}
 	}
 
-	private static void trySetupSoundHandler(Player player) {
-		if (!(player instanceof LocalPlayer)) return;
+	private static void trySetupSoundHandler(PlayerEntity player) {
+		if (!(player instanceof ClientPlayerEntity)) return;
 
 		if (handler == null) {
 			handler = new Handler(player);
@@ -87,7 +86,7 @@ public class EuphoniumBiome {
 	}
 
 	public static class Handler extends SoundHandler<BiomeSound> {
-		public Handler(@NotNull Player player) {
+		public Handler(@NotNull PlayerEntity player) {
 			super(player);
 
 			BADLANDS.addSounds(this);

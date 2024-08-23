@@ -2,11 +2,6 @@ package folk.sisby.euphonium.sounds.biome;
 
 import folk.sisby.euphonium.EuphoniumClient;
 import folk.sisby.euphonium.helper.SoundHelper;
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.tags.BiomeTags;
-import net.minecraft.world.level.biome.Biome;
 import folk.sisby.euphonium.sound.BiomeSound;
 import folk.sisby.euphonium.sound.ISoundType;
 import folk.sisby.euphonium.sound.SoundHandler;
@@ -15,12 +10,17 @@ import folk.sisby.euphonium.helper.WorldHelper;
 
 import org.jetbrains.annotations.Nullable;
 import java.util.function.Predicate;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.tag.BiomeTags;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
 
 public class Taiga implements ISoundType<BiomeSound> {
     public static SoundEvent DAY_SOUND;
     public static SoundEvent NIGHT_SOUND;
-    public static final Predicate<Holder<Biome>> VALID_BIOME =
-        holder -> holder.is(BiomeTags.IS_TAIGA);
+    public static final Predicate<RegistryEntry<Biome>> VALID_BIOME =
+        holder -> holder.isIn(BiomeTags.IS_TAIGA);
 
     public Taiga() {
         DAY_SOUND = SoundHelper.sound(EuphoniumClient.id("biome.taiga.day"));
@@ -43,7 +43,7 @@ public class Taiga implements ISoundType<BiomeSound> {
             }
 
             @Override
-            public boolean isValidBiomeCondition(Holder<Biome> holder, ResourceKey<Biome> key) {
+            public boolean isValidBiomeCondition(RegistryEntry<Biome> holder, RegistryKey<Biome> key) {
                 return VALID_BIOME.test(holder);
             }
         });
@@ -62,7 +62,7 @@ public class Taiga implements ISoundType<BiomeSound> {
             }
 
             @Override
-            public boolean isValidBiomeCondition(Holder<Biome> holder, ResourceKey<Biome> key) {
+            public boolean isValidBiomeCondition(RegistryEntry<Biome> holder, RegistryKey<Biome> key) {
                 return VALID_BIOME.test(holder);
             }
         });
