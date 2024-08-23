@@ -2,11 +2,11 @@ package folk.sisby.euphonium.sounds.biome;
 
 import folk.sisby.euphonium.EuphoniumClient;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
 import folk.sisby.euphonium.sound.BiomeSound;
 import folk.sisby.euphonium.sound.ISoundType;
 import folk.sisby.euphonium.sound.SoundHandler;
@@ -19,12 +19,12 @@ import java.util.function.BiPredicate;
 public class Plains implements ISoundType<BiomeSound> {
     public static SoundEvent DAY_SOUND;
     public static SoundEvent NIGHT_SOUND;
-    public static final BiPredicate<Holder<Biome>, ResourceKey<Biome>> VALID_BIOME =
-        (holder, key) -> key.equals(Biomes.PLAINS) || holder.is(ConventionalBiomeTags.PLAINS);
+    public static final BiPredicate<RegistryEntry<Biome>, RegistryKey<Biome>> VALID_BIOME =
+        (holder, key) -> key.equals(BiomeKeys.PLAINS) || holder.isIn(ConventionalBiomeTags.PLAINS);
 
     public Plains() {
-        DAY_SOUND = SoundEvent.createVariableRangeEvent(EuphoniumClient.id("biome.plains.day"));
-        NIGHT_SOUND = SoundEvent.createVariableRangeEvent(EuphoniumClient.id("biome.plains.night"));
+        DAY_SOUND = SoundEvent.of(EuphoniumClient.id("biome.plains.day"));
+        NIGHT_SOUND = SoundEvent.of(EuphoniumClient.id("biome.plains.night"));
     }
 
     @Override
@@ -43,7 +43,7 @@ public class Plains implements ISoundType<BiomeSound> {
             }
 
             @Override
-            public boolean isValidBiomeCondition(Holder<Biome> holder, ResourceKey<Biome> key) {
+            public boolean isValidBiomeCondition(RegistryEntry<Biome> holder, RegistryKey<Biome> key) {
                 return VALID_BIOME.test(holder, key);
             }
         });
@@ -62,7 +62,7 @@ public class Plains implements ISoundType<BiomeSound> {
             }
 
             @Override
-            public boolean isValidBiomeCondition(Holder<Biome> holder, ResourceKey<Biome> key) {
+            public boolean isValidBiomeCondition(RegistryEntry<Biome> holder, RegistryKey<Biome> key) {
                 return VALID_BIOME.test(holder, key);
             }
         });

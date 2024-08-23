@@ -1,19 +1,19 @@
- package folk.sisby.euphonium.sounds.world;
+package folk.sisby.euphonium.sounds.world;
 
- import folk.sisby.euphonium.EuphoniumClient;
- import folk.sisby.euphonium.sound.ISoundType;
- import folk.sisby.euphonium.sound.RepeatedWorldSound;
- import folk.sisby.euphonium.sound.SoundHandler;
- import folk.sisby.euphonium.sound.WorldSound;
- import folk.sisby.euphonium.sounds.biome.TheEnd;
- import net.minecraft.sounds.SoundEvent;
- import org.jetbrains.annotations.Nullable;
+import folk.sisby.euphonium.EuphoniumClient;
+import folk.sisby.euphonium.sound.ISoundType;
+import folk.sisby.euphonium.sound.RepeatedWorldSound;
+import folk.sisby.euphonium.sound.SoundHandler;
+import folk.sisby.euphonium.sound.WorldSound;
+import folk.sisby.euphonium.sounds.biome.TheEnd;
+import net.minecraft.sound.SoundEvent;
+import org.jetbrains.annotations.Nullable;
 
  public class Alien implements ISoundType<WorldSound> {
     public static SoundEvent SOUND;
 
     public Alien() {
-        SOUND = SoundEvent.createVariableRangeEvent(EuphoniumClient.id("world.alien"));
+        SOUND = SoundEvent.of(EuphoniumClient.id("world.alien"));
     }
 
     public void addSounds(SoundHandler<WorldSound> handler) {
@@ -22,7 +22,7 @@
         handler.getSounds().add(new RepeatedWorldSound(handler.getPlayer()) {
             @Override
             public boolean isValidSituationCondition() {
-                var holder = getBiomeHolder(player.blockPosition());
+                var holder = getBiomeHolder(player.getBlockPos());
                 return TheEnd.VALID_BIOME.test(holder);
             }
 

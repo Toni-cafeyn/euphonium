@@ -1,37 +1,37 @@
 package folk.sisby.euphonium.sound;
 
 import folk.sisby.euphonium.EuphoniumClient;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.player.PlayerEntity;
 
 public abstract class WorldSound implements ISoundInstance {
-    protected Minecraft client;
-    protected Player player;
-    protected ClientLevel level;
+    protected MinecraftClient client;
+    protected PlayerEntity player;
+    protected ClientWorld level;
     protected boolean isValid;
     protected boolean playUnderWater = false;
 
-    public WorldSound(Player player) {
-        this.client = Minecraft.getInstance();
+    public WorldSound(PlayerEntity player) {
+        this.client = MinecraftClient.getInstance();
         this.player = player;
-        this.level = (ClientLevel) player.level();
+        this.level = (ClientWorld) player.getWorld();
     }
 
     @Override
-    public ClientLevel getLevel() {
+    public ClientWorld getLevel() {
         return level;
     }
 
     @Override
-    public Player getPlayer() {
+    public PlayerEntity getPlayer() {
         return player;
     }
 
     @Override
-    public void updatePlayer(Player player) {
+    public void updatePlayer(PlayerEntity player) {
         this.player = player;
-        this.level = (ClientLevel) player.level();
+        this.level = (ClientWorld) player.getWorld();
     }
 
     public abstract boolean isValidSituationCondition();
@@ -40,9 +40,9 @@ public abstract class WorldSound implements ISoundInstance {
     public boolean isValid() {
 
         // Initial filters.
-        if (client.level == null || level == null) return false;
+        if (client.world == null || level == null) return false;
         if (!player.isAlive()) return false;
-        if (player.isUnderWater() && !playUnderWater) return false;
+        if (player.isSubmergedInWater() && !playUnderWater) return false;
 
         return isValidSituationCondition()
             && isValidPlayerCondition();

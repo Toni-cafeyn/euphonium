@@ -19,9 +19,7 @@ dependencies {
 	include libs.kaleidoConfig
 
 	minecraft libs.mc
-	mappings loom.layered {
-		officialMojangMappings()
-	}
+	mappings variantOf(libs.yarn) { classifier "v2" }
 	modImplementation libs.fl
 
 	modImplementation libs.fapi
@@ -46,10 +44,6 @@ processResources {
 	inputs.properties(meta)
 	filesMatching("*.mod.json") { expand(meta) }
 	filesMatching("META-INF/*mods.toml") { expand(meta) }
-}
-
-loom {
-	accessWidenerPath = file("src/main/resources/euphonium.accesswidener")
 }
 
 tasks.withType(JavaCompile).configureEach {

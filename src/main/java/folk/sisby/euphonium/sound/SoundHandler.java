@@ -1,20 +1,20 @@
 package folk.sisby.euphonium.sound;
 
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class SoundHandler<T extends ISoundInstance> {
-    private Player player;
+    private PlayerEntity player;
     private final List<T> sounds = new ArrayList<>();
 
-    public SoundHandler(@NotNull Player player) {
+    public SoundHandler(@NotNull PlayerEntity player) {
         updatePlayer(player);
     }
 
-    public void updatePlayer(@NotNull Player player) {
+    public void updatePlayer(@NotNull PlayerEntity player) {
         this.player = player;
         sounds.forEach(s -> s.updatePlayer(this.player));
     }
@@ -23,7 +23,7 @@ public class SoundHandler<T extends ISoundInstance> {
         return sounds;
     }
 
-    public Player getPlayer() {
+    public PlayerEntity getPlayer() {
         return player;
     }
 

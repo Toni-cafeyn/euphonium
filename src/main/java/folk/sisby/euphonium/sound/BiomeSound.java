@@ -2,53 +2,52 @@ package folk.sisby.euphonium.sound;
 
 import folk.sisby.euphonium.EuphoniumBiome;
 import folk.sisby.euphonium.EuphoniumClient;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.biome.Biome;
-
 import java.util.ConcurrentModificationException;
 import java.util.List;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.sound.MovingSoundInstance;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.biome.Biome;
 
 public abstract class BiomeSound implements ISoundInstance {
-    protected Minecraft client;
+    protected MinecraftClient client;
     protected boolean isValid = false;
-    protected Player player;
-    protected ClientLevel level;
+    protected PlayerEntity player;
+    protected ClientWorld level;
     protected LoopingSound soundInstance = null;
     protected float blendScaling = 1.0F;
     protected float volumeScaleFade = 0.005F;
 
-    protected BiomeSound(Player player) {
-        this.client = Minecraft.getInstance();
+    protected BiomeSound(PlayerEntity player) {
+        this.client = MinecraftClient.getInstance();
         this.player = player;
-        this.level = (ClientLevel) player.level();
+        this.level = (ClientWorld) player.getWorld();
     }
 
-    public abstract boolean isValidBiomeCondition(Holder<Biome> holder, ResourceKey<Biome> key);
+    public abstract boolean isValidBiomeCondition(RegistryEntry<Biome> holder, RegistryKey<Biome> key);
 
     @Override
-    public void updatePlayer(Player player) {
+    public void updatePlayer(PlayerEntity player) {
         this.player = player;
-        this.level = (ClientLevel) player.level();
+        this.level = (ClientWorld) player.getWorld();
     }
 
     @Override
-    public ClientLevel getLevel() {
+    public ClientWorld getLevel() {
         return level;
     }
 
     @Override
-    public Player getPlayer() {
+    public PlayerEntity getPlayer() {
         return player;
     }
 
     @Override
-    public AbstractTickableSoundInstance getSoundInstance() {
+    public MovingSoundInstance getSoundInstance() {
         return soundInstance;
     }
 
@@ -91,15 +90,15 @@ public abstract class BiomeSound implements ISoundInstance {
 
     @Override
     public boolean isValid() {
-        if (client.level == null || level == null) return false;
+        if (client.world == null || level == null) return false;
         if (!player.isAlive()) return false;
         if (!isValidPlayerCondition()) return false;
 
-        if (!EuphoniumBiome.VALID_DIMENSIONS.contains(level.dimension().location())) {
+        if (!EuphoniumBiome.VALID_DIMENSIONS.contains(level.getRegistryKey().getValue())) {
             return false;
         }
 
-        var pos = player.blockPosition();
+        var pos = player.getBlockPos();
         var blend = (float) EuphoniumClient.CONFIG.biomeAmbience.biomeBlend;
 
         if (blend > 0) {
@@ -114,7 +113,7 @@ public abstract class BiomeSound implements ISoundInstance {
 
             for (var direction : directions) {
                 for (int i = 0; i < blend; i += 2) {
-                    var relativePos = pos.relative(direction, i);
+                    var relativePos = pos.offset(direction, i);
 
                     // Get the biome and key for condition check.
                     var holder = getBiomeHolder(relativePos);

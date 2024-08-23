@@ -6,20 +6,20 @@
  import folk.sisby.euphonium.sound.RepeatedWorldSound;
  import folk.sisby.euphonium.sound.SoundHandler;
  import folk.sisby.euphonium.sound.WorldSound;
- import net.minecraft.core.BlockPos;
- import net.minecraft.sounds.SoundEvent;
- import net.minecraft.world.level.block.AmethystBlock;
- import net.minecraft.world.level.block.Block;
- import net.minecraft.world.level.block.Blocks;
- import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
  import java.util.Optional;
+import net.minecraft.block.AmethystBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 
  public class Geode implements ISoundType<WorldSound> {
      public static SoundEvent SOUND;
 
      public Geode() {
-         SOUND = SoundEvent.createVariableRangeEvent(EuphoniumClient.id("world.geode"));
+         SOUND = SoundEvent.of(EuphoniumClient.id("world.geode"));
      }
 
      public void addSounds(SoundHandler<WorldSound> handler) {
@@ -28,12 +28,12 @@
          handler.getSounds().add(new RepeatedWorldSound(handler.getPlayer()) {
              @Override
              public boolean isValidSituationCondition() {
-                 Optional<BlockPos> optAmethyst = BlockPos.findClosestMatch(player.blockPosition(), 12, 8, pos -> {
+                 Optional<BlockPos> optAmethyst = BlockPos.findClosest(player.getBlockPos(), 12, 8, pos -> {
                      Block block = level.getBlockState(pos).getBlock();
                      return block instanceof AmethystBlock;
                  });
 
-                 Optional<BlockPos> optSmoothBasalt = BlockPos.findClosestMatch(player.blockPosition(), 12, 8, pos -> {
+                 Optional<BlockPos> optSmoothBasalt = BlockPos.findClosest(player.getBlockPos(), 12, 8, pos -> {
                      Block block = level.getBlockState(pos).getBlock();
                      return block == Blocks.SMOOTH_BASALT;
                  });

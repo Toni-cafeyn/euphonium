@@ -6,19 +6,19 @@
  import folk.sisby.euphonium.sound.RepeatedWorldSound;
  import folk.sisby.euphonium.sound.SoundHandler;
  import folk.sisby.euphonium.sound.WorldSound;
- import net.minecraft.core.BlockPos;
- import net.minecraft.sounds.SoundEvent;
- import net.minecraft.world.level.block.Block;
- import net.minecraft.world.level.block.Blocks;
- import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
  import java.util.Optional;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 
  public class UndergroundWater implements ISoundType<WorldSound> {
      public static SoundEvent SOUND;
 
      public UndergroundWater() {
-         SOUND = SoundEvent.createVariableRangeEvent(EuphoniumClient.id("world.underground_water"));
+         SOUND = SoundEvent.of(EuphoniumClient.id("world.underground_water"));
      }
 
      public void addSounds(SoundHandler<WorldSound> handler) {
@@ -27,7 +27,7 @@
          handler.getSounds().add(new RepeatedWorldSound(handler.getPlayer()) {
              @Override
              public boolean isValidSituationCondition() {
-                 Optional<BlockPos> optWater = BlockPos.findClosestMatch(player.blockPosition(), 12, 8, pos -> {
+                 Optional<BlockPos> optWater = BlockPos.findClosest(player.getBlockPos(), 12, 8, pos -> {
                      Block block = level.getBlockState(pos).getBlock();
                      return block == Blocks.WATER;
                  });
@@ -43,7 +43,7 @@
              @Override
              public boolean isValidPlayerCondition() {
                  return !WorldHelper.isOutside(player)
-                     && !player.isUnderWater()
+                     && !player.isSubmergedInWater()
                      && WorldHelper.isBelowSeaLevel(player);
              }
 

@@ -1,26 +1,26 @@
- package folk.sisby.euphonium.sounds.world;
+package folk.sisby.euphonium.sounds.world;
 
- import folk.sisby.euphonium.EuphoniumClient;
- import folk.sisby.euphonium.helper.WorldHelper;
- import folk.sisby.euphonium.sound.ISoundType;
- import folk.sisby.euphonium.sound.RepeatedWorldSound;
- import folk.sisby.euphonium.sound.SoundHandler;
- import folk.sisby.euphonium.sound.WorldSound;
- import net.minecraft.core.BlockPos;
- import net.minecraft.sounds.SoundEvent;
- import net.minecraft.world.entity.monster.Monster;
- import net.minecraft.world.level.block.Block;
- import net.minecraft.world.level.block.Blocks;
- import net.minecraft.world.phys.AABB;
- import org.jetbrains.annotations.Nullable;
+import folk.sisby.euphonium.EuphoniumClient;
+import folk.sisby.euphonium.helper.WorldHelper;
+import folk.sisby.euphonium.sound.ISoundType;
+import folk.sisby.euphonium.sound.RepeatedWorldSound;
+import folk.sisby.euphonium.sound.SoundHandler;
+import folk.sisby.euphonium.sound.WorldSound;
+import org.jetbrains.annotations.Nullable;
 
- import java.util.List;
+import java.util.List;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 
  public class Mansion implements ISoundType<WorldSound> {
      public static SoundEvent SOUND;
 
      public Mansion() {
-         SOUND = SoundEvent.createVariableRangeEvent(EuphoniumClient.id("world.mansion"));
+         SOUND = SoundEvent.of(EuphoniumClient.id("world.mansion"));
      }
 
      public void addSounds(SoundHandler<WorldSound> handler) {
@@ -29,15 +29,15 @@
          handler.getSounds().add(new RepeatedWorldSound(handler.getPlayer()) {
              @Override
              public boolean isValidSituationCondition() {
-                 var bb = new AABB(player.blockPosition()).inflate(10);
-                 List<Monster> monsters = level.getEntitiesOfClass(Monster.class, bb);
+                 var bb = new Box(player.getBlockPos()).expand(10);
+                 List<HostileEntity> monsters = level.getNonSpectatingEntities(HostileEntity.class, bb);
 
-                 var optBlock1 = BlockPos.findClosestMatch(player.blockPosition(), 8, 8, pos -> {
+                 var optBlock1 = BlockPos.findClosest(player.getBlockPos(), 8, 8, pos -> {
                      Block block = level.getBlockState(pos).getBlock();
                      return block == Blocks.DARK_OAK_PLANKS;
                  });
 
-                 var optBlock2 = BlockPos.findClosestMatch(player.blockPosition(), 8, 8, pos -> {
+                 var optBlock2 = BlockPos.findClosest(player.getBlockPos(), 8, 8, pos -> {
                      Block block = level.getBlockState(pos).getBlock();
                      return block == Blocks.BIRCH_PLANKS;
                  });
@@ -46,7 +46,7 @@
                      // Get a hostile mob's location as the source of the sound.
                      var optMonster = monsters.stream().findAny();
                      if (optMonster.isPresent()) {
-                         setPos(optMonster.get().blockPosition());
+                         setPos(optMonster.get().getBlockPos());
                          return true;
                      }
                  }

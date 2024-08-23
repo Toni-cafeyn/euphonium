@@ -1,20 +1,20 @@
- package folk.sisby.euphonium.sounds.world;
+package folk.sisby.euphonium.sounds.world;
 
- import folk.sisby.euphonium.EuphoniumClient;
- import folk.sisby.euphonium.helper.WorldHelper;
- import folk.sisby.euphonium.sound.ISoundType;
- import folk.sisby.euphonium.sound.RepeatedWorldSound;
- import folk.sisby.euphonium.sound.SoundHandler;
- import folk.sisby.euphonium.sound.WorldSound;
- import folk.sisby.euphonium.sounds.biome.Icy;
- import net.minecraft.sounds.SoundEvent;
- import org.jetbrains.annotations.Nullable;
+import folk.sisby.euphonium.EuphoniumClient;
+import folk.sisby.euphonium.helper.WorldHelper;
+import folk.sisby.euphonium.sound.ISoundType;
+import folk.sisby.euphonium.sound.RepeatedWorldSound;
+import folk.sisby.euphonium.sound.SoundHandler;
+import folk.sisby.euphonium.sound.WorldSound;
+import folk.sisby.euphonium.sounds.biome.Icy;
+import net.minecraft.sound.SoundEvent;
+import org.jetbrains.annotations.Nullable;
 
  public class Snowstorm implements ISoundType<WorldSound> {
      public static SoundEvent SOUND;
 
      public Snowstorm() {
-         SOUND = SoundEvent.createVariableRangeEvent(EuphoniumClient.id("world.snowstorm"));
+         SOUND = SoundEvent.of(EuphoniumClient.id("world.snowstorm"));
      }
 
      public void addSounds(SoundHandler<WorldSound> handler) {
@@ -23,7 +23,7 @@
          handler.getSounds().add(new RepeatedWorldSound(handler.getPlayer()) {
              @Override
              public boolean isValidSituationCondition() {
-                 var holder = getBiomeHolder(player.blockPosition());
+                 var holder = getBiomeHolder(player.getBlockPos());
                  return Icy.VALID_BIOME.test(holder);
              }
 

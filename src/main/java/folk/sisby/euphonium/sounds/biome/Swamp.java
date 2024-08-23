@@ -2,10 +2,10 @@ package folk.sisby.euphonium.sounds.biome;
 
 import folk.sisby.euphonium.EuphoniumClient;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.level.biome.Biome;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.world.biome.Biome;
 import folk.sisby.euphonium.sound.BiomeSound;
 import folk.sisby.euphonium.sound.ISoundType;
 import folk.sisby.euphonium.sound.SoundHandler;
@@ -18,12 +18,12 @@ import java.util.function.Predicate;
 public class Swamp implements ISoundType<BiomeSound> {
     public static SoundEvent DAY_SOUND;
     public static SoundEvent NIGHT_SOUND;
-    public static final Predicate<Holder<Biome>> VALID_BIOME =
-        holder -> holder.is(ConventionalBiomeTags.SWAMP);
+    public static final Predicate<RegistryEntry<Biome>> VALID_BIOME =
+        holder -> holder.isIn(ConventionalBiomeTags.SWAMP);
 
     public Swamp() {
-        DAY_SOUND = SoundEvent.createVariableRangeEvent(EuphoniumClient.id("biome.swamp.day"));
-        NIGHT_SOUND = SoundEvent.createVariableRangeEvent(EuphoniumClient.id("biome.swamp.night"));
+        DAY_SOUND = SoundEvent.of(EuphoniumClient.id("biome.swamp.day"));
+        NIGHT_SOUND = SoundEvent.of(EuphoniumClient.id("biome.swamp.night"));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class Swamp implements ISoundType<BiomeSound> {
             }
 
             @Override
-            public boolean isValidBiomeCondition(Holder<Biome> holder, ResourceKey<Biome> key) {
+            public boolean isValidBiomeCondition(RegistryEntry<Biome> holder, RegistryKey<Biome> key) {
                 return VALID_BIOME.test(holder);
             }
         });
@@ -61,7 +61,7 @@ public class Swamp implements ISoundType<BiomeSound> {
             }
 
             @Override
-            public boolean isValidBiomeCondition(Holder<Biome> holder, ResourceKey<Biome> key) {
+            public boolean isValidBiomeCondition(RegistryEntry<Biome> holder, RegistryKey<Biome> key) {
                 return VALID_BIOME.test(holder);
             }
         });
