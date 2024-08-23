@@ -11,96 +11,96 @@ import java.util.List;
 
 public class EuphoniumConfig extends WrappedConfig {
 	@Comment("The channel that Euphonium will use for playing sounds")
-	public final SoundCategory channel = SoundCategory.AMBIENT;
+	public SoundCategory channel = SoundCategory.AMBIENT;
 
 	@Comment("Plays ambient background sound according to the biome and time of day")
-	public final Boolean biomeAmbienceEnabled = true;
+	public boolean biomeAmbienceEnabled = true;
 
 	@Comment("Plays ambient sound according to world features around the player")
-	public final Boolean worldAmbienceEnabled = true;
+	public boolean worldAmbienceEnabled = true;
 
-	public final BiomeAmbience biomeAmbience = new BiomeAmbience();
-	public final WorldAmbience worldAmbience = new WorldAmbience();
+	public BiomeAmbience biomeAmbience = new BiomeAmbience();
+	public WorldAmbience worldAmbience = new WorldAmbience();
 
-	public static final class BiomeAmbience implements folk.sisby.kaleido.api.WrappedConfig.Section {
+	public static class BiomeAmbience implements folk.sisby.kaleido.api.WrappedConfig.Section {
 		@Comment("Number of blocks above the ground that biome ambience will be silenced")
 		@Comment("Set to zero to disable")
-		public final Integer cullSoundAboveGround = 32;
+		public int cullSoundAboveGround = 32;
 
 		@Comment("Number of blocks to check for neighbouring biomes")
 		@Comment("Set to zero to disable")
-		public final Integer biomeBlend = 32;
+		public int biomeBlend = 32;
 
 		@Comment("Affects the volume of all biome ambient sounds")
 		@FloatRange(min = 0.0D, max = 1.0D)
-		public final Double volumeScaling = 0.55D;
+		public double volumeScaling = 0.55D;
 
 		@Comment("Dimensions in which biome ambience will be played")
-		public final List<String> dimensions = ValueList.create("minecraft:overworld", "minecraft:overworld", "minecraft:the_end");
+		public List<String> dimensions = ValueList.create("minecraft:overworld", "minecraft:overworld", "minecraft:the_end");
 	}
 
-	public static final class WorldAmbience implements folk.sisby.kaleido.api.WrappedConfig.Section {
+	public static class WorldAmbience implements folk.sisby.kaleido.api.WrappedConfig.Section {
 		@Comment("Affects the volume of all world ambient sounds")
 		@FloatRange(min = 0.0D, max = 1.0D)
-		public final Double volumeScaling = 0.55D;
+		public double volumeScaling = 0.55D;
 
 		@Comment("Number of blocks above the ground that biome ambience will be silenced")
 		@Comment("Set to zero to disable")
-		public final Integer cullSoundAboveGround = 32;
+		public int cullSoundAboveGround = 32;
 
 		@Comment("Plays ambient sounds while anywhere in the End")
-		public final Boolean alien = true;
+		public boolean alien = true;
 
 		@Comment("Plays ambient sounds in cold and/or barren overworld environments")
-		public final Boolean bleak = true;
+		public boolean bleak = true;
 
 		@Comment("Plays ambient sounds in dry and/or hot overworld environments")
-		public final Boolean dry = true;
+		public boolean dry = true;
 
 		@Comment("Plays ambient sounds when high up in the overworld")
-		public final Boolean high = true;
+		public boolean high = true;
 
 		@Comment("Plays ambient sounds in plains environments at night")
-		public final Boolean nightPlains = true;
+		public boolean nightPlains = true;
 
 		@Comment("Plays ambient sounds when in a cold biome during a thunderstorm")
-		public final Boolean snowstorm = true;
+		public boolean snowstorm = true;
 
 		@Comment("Plays ambient sounds while inside a woodland mansion")
-		public final Boolean mansion = true;
+		public boolean mansion = true;
 
 		@Comment("Plays ambient sounds when a player is inside a village")
-		public final Boolean village = true;
+		public boolean village = true;
 
 		@Comment("Plays ambient sounds from a nearby mineshaft")
-		public final Boolean mineshaft = true;
+		public boolean mineshaft = true;
 
 		@Comment("Plays ambient sounds from a nearby amethyst geode")
-		public final Boolean geode = true;
+		public boolean geode = true;
 
 		@Comment("Plays water sounds from a nearby water source when underground")
-		public final Boolean undergroundWater = true;
+		public boolean undergroundWater = true;
 
 		@Comment("Plays ambient sounds when the player is underground and near gravel blocks")
-		public final Boolean gravel = true;
+		public boolean gravel = true;
 
 		@Comment("Plays ambient sounds when the player is underground and near deepslate blocks")
-		public final Boolean deepslate = true;
+		public boolean deepslate = true;
 
 		@Comment("Plays more Intense cave sounds when below Y 0 and light level is lower than 10")
-		public final Boolean caveDepth = true;
+		public boolean caveDepth = true;
 
 		@Comment("Plays a low drone sound when in a cave below a certain depth")
-		public final Boolean caveDrone = true;
+		public boolean caveDrone = true;
 
 		@Comment("Depth (Y Coordinate) under which cave drone ambience will play")
-		public final Integer caveDroneDepth = 48;
+		public int caveDroneDepth = 48;
 
 		@Comment("Light level at which cave ambience (drone and depth) will stop playing")
 		@IntegerRange(min = 0, max = 16)
-		public final Integer caveLightLevel = 10;
+		public int caveLightLevel = 10;
 
 		@Comment("Dimensions in which cave ambience (drone and depth) will be played")
-		public final List<String> caveDimensions = ValueList.create("minecraft:overworld", "minecraft:overworld");
+		public List<String> caveDimensions = ValueList.create("minecraft:overworld", "minecraft:overworld");
 	}
 }
