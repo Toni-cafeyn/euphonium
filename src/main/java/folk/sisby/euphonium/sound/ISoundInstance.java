@@ -15,69 +15,69 @@ import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public interface ISoundInstance {
-    boolean isValid();
+	boolean isValid();
 
-    boolean isValidPlayerCondition();
+	boolean isValidPlayerCondition();
 
-    void tick();
+	void tick();
 
-    void updatePlayer(PlayerEntity player);
+	void updatePlayer(PlayerEntity player);
 
-    PlayerEntity getPlayer();
+	PlayerEntity getPlayer();
 
-    ClientWorld getLevel();
+	ClientWorld getLevel();
 
-    @Nullable
-    SoundEvent getSound();
+	@Nullable
+	SoundEvent getSound();
 
-    MovingSoundInstance getSoundInstance();
+	MovingSoundInstance getSoundInstance();
 
-    default Biome getBiome(BlockPos pos) {
-        return getBiomeHolder(pos).value();
-    }
+	default Biome getBiome(BlockPos pos) {
+		return getBiomeHolder(pos).value();
+	}
 
-    default RegistryKey<Biome> getBiomeKey(BlockPos pos) {
-        var biome = getBiome(pos);
-        return getLevel().getRegistryManager()
-            .get(Registry.BIOME_KEY)
-            .getKey(biome)
-            .orElse(null);
-    }
+	default RegistryKey<Biome> getBiomeKey(BlockPos pos) {
+		var biome = getBiome(pos);
+		return getLevel().getRegistryManager()
+			.get(Registry.BIOME_KEY)
+			.getKey(biome)
+			.orElse(null);
+	}
 
-    default RegistryEntry<Biome> getBiomeHolder(BlockPos pos) {
-        return getPlayer().world.getBiome(pos);
-    }
+	default RegistryEntry<Biome> getBiomeHolder(BlockPos pos) {
+		return getPlayer().world.getBiome(pos);
+	}
 
-    default MinecraftClient getMinecraft() {
-        return MinecraftClient.getInstance();
-    }
+	default MinecraftClient getMinecraft() {
+		return MinecraftClient.getInstance();
+	}
 
-    default SoundManager getSoundManager() {
-        return getMinecraft().getSoundManager();
-    }
+	default SoundManager getSoundManager() {
+		return getMinecraft().getSoundManager();
+	}
 
-    default boolean isPlaying() {
-        return getSoundInstance() != null
-            && getSoundManager().isPlaying(getSoundInstance());
-    }
+	default boolean isPlaying() {
+		return getSoundInstance() != null
+			&& getSoundManager().isPlaying(getSoundInstance());
+	}
 
-    default void stop() {
-        getSoundManager().stop(getSoundInstance());
-    }
+	default void stop() {
+		getSoundManager().stop(getSoundInstance());
+	}
 
-    default int getDelay() {
-        return 0;
-    }
+	default int getDelay() {
+		return 0;
+	}
 
-    default float getVolume() {
-        return 1.0F;
-    }
+	default float getVolume() {
+		return 1.0F;
+	}
 
-    default float getPitch() {
-        return 1.0F;
-    }
+	default float getPitch() {
+		return 1.0F;
+	}
 
-    default double getVolumeScaling() {
-        return 1.0D;
-    }
+	default double getVolumeScaling() {
+		return 1.0D;
+	}
 }

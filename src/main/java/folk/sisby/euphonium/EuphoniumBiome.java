@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EuphoniumBiome {
-	public static List<Identifier> VALID_DIMENSIONS = new ArrayList<>();
 	private static final ISoundType<BiomeSound> BADLANDS = new Badlands();
 	private static final ISoundType<BiomeSound> BEACH = new Beach();
 	private static final ISoundType<BiomeSound> DESERT = new Desert();
@@ -46,6 +45,7 @@ public class EuphoniumBiome {
 	private static final ISoundType<BiomeSound> SWAMP = new Swamp();
 	private static final ISoundType<BiomeSound> TAIGA = new Taiga();
 	private static final ISoundType<BiomeSound> THE_END = new TheEnd();
+	public static List<Identifier> VALID_DIMENSIONS = new ArrayList<>();
 	private static Handler handler;
 
 	public static void init() {

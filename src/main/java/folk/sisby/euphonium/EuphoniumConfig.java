@@ -5,12 +5,13 @@ import folk.sisby.kaleido.lib.quiltconfig.api.annotations.Comment;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.FloatRange;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.IntegerRange;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.ValueList;
-import java.util.List;
 import net.minecraft.sound.SoundCategory;
 
+import java.util.List;
+
 public class EuphoniumConfig extends WrappedConfig {
-    @Comment("The channel that Euphonium will use for playing sounds")
-    public final SoundCategory channel = SoundCategory.AMBIENT;
+	@Comment("The channel that Euphonium will use for playing sounds")
+	public final SoundCategory channel = SoundCategory.AMBIENT;
 
 	@Comment("Plays ambient background sound according to the biome and time of day")
 	public final Boolean biomeAmbienceEnabled = true;
@@ -19,6 +20,8 @@ public class EuphoniumConfig extends WrappedConfig {
 	public final Boolean worldAmbienceEnabled = true;
 
 	public final BiomeAmbience biomeAmbience = new BiomeAmbience();
+	public final WorldAmbience worldAmbience = new WorldAmbience();
+
 	public static final class BiomeAmbience implements folk.sisby.kaleido.api.WrappedConfig.Section {
 		@Comment("Number of blocks above the ground that biome ambience will be silenced")
 		@Comment("Set to zero to disable")
@@ -29,17 +32,16 @@ public class EuphoniumConfig extends WrappedConfig {
 		public final Integer biomeBlend = 32;
 
 		@Comment("Affects the volume of all biome ambient sounds")
-		@FloatRange(min=0.0D, max=1.0D)
+		@FloatRange(min = 0.0D, max = 1.0D)
 		public final Double volumeScaling = 0.55D;
 
 		@Comment("Dimensions in which biome ambience will be played")
 		public final List<String> dimensions = ValueList.create("minecraft:overworld", "minecraft:overworld", "minecraft:the_end");
 	}
 
-	public final WorldAmbience worldAmbience = new WorldAmbience();
 	public static final class WorldAmbience implements folk.sisby.kaleido.api.WrappedConfig.Section {
 		@Comment("Affects the volume of all world ambient sounds")
-		@FloatRange(min=0.0D, max=1.0D)
+		@FloatRange(min = 0.0D, max = 1.0D)
 		public final Double volumeScaling = 0.55D;
 
 		@Comment("Number of blocks above the ground that biome ambience will be silenced")
@@ -95,7 +97,7 @@ public class EuphoniumConfig extends WrappedConfig {
 		public final Integer caveDroneDepth = 48;
 
 		@Comment("Light level at which cave ambience (drone and depth) will stop playing")
-		@IntegerRange(min=0, max=16)
+		@IntegerRange(min = 0, max = 16)
 		public final Integer caveLightLevel = 10;
 
 		@Comment("Dimensions in which cave ambience (drone and depth) will be played")

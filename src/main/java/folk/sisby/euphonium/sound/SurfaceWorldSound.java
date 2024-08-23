@@ -5,23 +5,23 @@ import folk.sisby.euphonium.helper.WorldHelper;
 import net.minecraft.entity.player.PlayerEntity;
 
 public abstract class SurfaceWorldSound extends RepeatedWorldSound {
-    protected SurfaceWorldSound(PlayerEntity player) {
-        super(player);
-    }
+	protected SurfaceWorldSound(PlayerEntity player) {
+		super(player);
+	}
 
-    @Override
-    public boolean isValidPlayerCondition() {
-        return WorldHelper.isOutside(getPlayer());
-    }
+	@Override
+	public boolean isValidPlayerCondition() {
+		return WorldHelper.isOutside(getPlayer());
+	}
 
-    @Override
-    public double getVolumeScaling() {
-        int cullDistance = EuphoniumClient.CONFIG.worldAmbience.cullSoundAboveGround;
+	@Override
+	public double getVolumeScaling() {
+		int cullDistance = EuphoniumClient.CONFIG.worldAmbience.cullSoundAboveGround;
 
-        if (cullDistance > 0) {
-            return super.getVolumeScaling() * Math.max(0.0D, 1.0D - (WorldHelper.distanceFromGround(getPlayer(), cullDistance) / cullDistance));
-        } else {
-            return super.getVolumeScaling();
-        }
-    }
+		if (cullDistance > 0) {
+			return super.getVolumeScaling() * Math.max(0.0D, 1.0D - (WorldHelper.distanceFromGround(getPlayer(), cullDistance) / cullDistance));
+		} else {
+			return super.getVolumeScaling();
+		}
+	}
 }

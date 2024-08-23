@@ -7,10 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EuphoniumClient implements ClientModInitializer {
-    public static final String ID = "euphonium";
+	public static final String ID = "euphonium";
 	public static final Logger LOGGER = LoggerFactory.getLogger(ID);
 
-	public static EuphoniumConfig CONFIG = EuphoniumConfig.createToml(FabricLoader.getInstance().getConfigDir(), "", ID,  EuphoniumConfig.class);
+	public static EuphoniumConfig CONFIG = EuphoniumConfig.createToml(FabricLoader.getInstance().getConfigDir(), "", ID, EuphoniumConfig.class);
 
 	public static Identifier id(String path) {
 		return new Identifier(ID, path);

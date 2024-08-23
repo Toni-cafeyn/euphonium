@@ -1,35 +1,36 @@
 package folk.sisby.euphonium.sound;
 
 import folk.sisby.euphonium.EuphoniumClient;
-import java.util.ConcurrentModificationException;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
 
+import java.util.ConcurrentModificationException;
+
 public abstract class LoopedWorldSound extends WorldSound {
-    protected LoopingSound soundInstance;
+	protected LoopingSound soundInstance;
 
-    public LoopedWorldSound(PlayerEntity player) {
-        super(player);
-    }
+	public LoopedWorldSound(PlayerEntity player) {
+		super(player);
+	}
 
-    public MovingSoundInstance getSoundInstance() {
-        return soundInstance;
-    }
+	public MovingSoundInstance getSoundInstance() {
+		return soundInstance;
+	}
 
-    @Override
-    public void tick() {
-        boolean nowValid = isValid();
+	@Override
+	public void tick() {
+		boolean nowValid = isValid();
 
-        if (isValid && !nowValid) isValid = false;
-        if (!isValid && nowValid) isValid = true;
+		if (isValid && !nowValid) isValid = false;
+		if (!isValid && nowValid) isValid = true;
 
-        if (isValid && !isPlaying()) {
-            soundInstance = new LoopingSound(player, getSound(), (float)(getVolume() * getVolumeScaling()), getPitch(), p -> isValid);
-            try {
-                getSoundManager().play(this.soundInstance);
-            } catch (ConcurrentModificationException e) {
+		if (isValid && !isPlaying()) {
+			soundInstance = new LoopingSound(player, getSound(), (float) (getVolume() * getVolumeScaling()), getPitch(), p -> isValid);
+			try {
+				getSoundManager().play(this.soundInstance);
+			} catch (ConcurrentModificationException e) {
 				EuphoniumClient.LOGGER.debug("{}: Exception in tick", this.getClass());
-            }
-        }
-    }
+			}
+		}
+	}
 }

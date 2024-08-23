@@ -1,27 +1,27 @@
 {
-  "schemaVersion": 1,
-  "id": "${modId}",
-  "version": "${version}",
-  "name": "${modName}",
-  "description": "${modDescription}",
-  "authors": [
-    "${authors}"
-  ],
-  "contact": {
-    "homepage": "${homepage}",
-    "issues": "${issues}",
-    "sources": "${sources}"
-  },
-  "license": "${license}",
-  "icon": "assets/${modId}/icon.png",
-  "entrypoints": {
-    "client": [
-      "folk.sisby.euphonium.EuphoniumClient"
-    ]
-  },
-  "depends": {
-    "fabricloader": ">=${fl}",
-    "minecraft": ">=${mc}",
-    "fabric-api": ">=${fapi}"
-  }
+	"schemaVersion": 1,
+	"id": "${modId}",
+	"version": "${version}",
+	"name": "${modName}",
+	"description": "${modDescription}",
+	"authors": [
+		"${authors}"
+	],
+	"contact": {
+		"homepage": "${homepage}",
+		"issues": "${issues}",
+		"sources": "${sources}"
+	},
+	"license": "${license}",
+	"icon": "assets/${modId}/icon.png",
+	"entrypoints": {
+		"client": [
+			"folk.sisby.euphonium.EuphoniumClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=${fl}",
+		"minecraft": ">=${mc}",
+		"fabric-api": ">=${fapi}"
+	}
 }

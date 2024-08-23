@@ -17,54 +17,54 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Predicate;
 
 public class Savanna implements ISoundType<BiomeSound> {
-    public static SoundEvent DAY_SOUND;
-    public static SoundEvent NIGHT_SOUND;
-    public static final Predicate<RegistryEntry<Biome>> VALID_BIOME =
-        holder -> holder.isIn(ConventionalBiomeTags.SAVANNA);
+	public static final Predicate<RegistryEntry<Biome>> VALID_BIOME =
+		holder -> holder.isIn(ConventionalBiomeTags.SAVANNA);
+	public static SoundEvent DAY_SOUND;
+	public static SoundEvent NIGHT_SOUND;
 
-    public Savanna() {
-        DAY_SOUND = SoundHelper.sound(EuphoniumClient.id("biome.savanna.day"));
-        NIGHT_SOUND = SoundHelper.sound(EuphoniumClient.id("biome.savanna.night"));
-    }
+	public Savanna() {
+		DAY_SOUND = SoundHelper.sound(EuphoniumClient.id("biome.savanna.day"));
+		NIGHT_SOUND = SoundHelper.sound(EuphoniumClient.id("biome.savanna.night"));
+	}
 
-    @Override
-    public void addSounds(SoundHandler<BiomeSound> handler) {
-        // Day sound.
-        handler.getSounds().add(new SurfaceBiomeSound(handler.getPlayer(), false) {
-            @Nullable
-            @Override
-            public SoundEvent getSound() {
-                return DAY_SOUND;
-            }
+	@Override
+	public void addSounds(SoundHandler<BiomeSound> handler) {
+		// Day sound.
+		handler.getSounds().add(new SurfaceBiomeSound(handler.getPlayer(), false) {
+			@Nullable
+			@Override
+			public SoundEvent getSound() {
+				return DAY_SOUND;
+			}
 
-            @Override
-            public boolean isValidPlayerCondition() {
-                return super.isValidPlayerCondition() && WorldHelper.isDay(player);
-            }
+			@Override
+			public boolean isValidPlayerCondition() {
+				return super.isValidPlayerCondition() && WorldHelper.isDay(player);
+			}
 
-            @Override
-            public boolean isValidBiomeCondition(RegistryEntry<Biome> holder, RegistryKey<Biome> key) {
-                return VALID_BIOME.test(holder);
-            }
-        });
+			@Override
+			public boolean isValidBiomeCondition(RegistryEntry<Biome> holder, RegistryKey<Biome> key) {
+				return VALID_BIOME.test(holder);
+			}
+		});
 
-        // Night sound.
-        handler.getSounds().add(new SurfaceBiomeSound(handler.getPlayer(), false) {
-            @Nullable
-            @Override
-            public SoundEvent getSound() {
-                return NIGHT_SOUND;
-            }
+		// Night sound.
+		handler.getSounds().add(new SurfaceBiomeSound(handler.getPlayer(), false) {
+			@Nullable
+			@Override
+			public SoundEvent getSound() {
+				return NIGHT_SOUND;
+			}
 
-            @Override
-            public boolean isValidPlayerCondition() {
-                return super.isValidPlayerCondition() && WorldHelper.isNight(player);
-            }
+			@Override
+			public boolean isValidPlayerCondition() {
+				return super.isValidPlayerCondition() && WorldHelper.isNight(player);
+			}
 
-            @Override
-            public boolean isValidBiomeCondition(RegistryEntry<Biome> holder, RegistryKey<Biome> key) {
-                return VALID_BIOME.test(holder);
-            }
-        });
-    }
+			@Override
+			public boolean isValidBiomeCondition(RegistryEntry<Biome> holder, RegistryKey<Biome> key) {
+				return VALID_BIOME.test(holder);
+			}
+		});
+	}
 }

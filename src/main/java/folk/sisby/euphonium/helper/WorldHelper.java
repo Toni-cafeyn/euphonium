@@ -13,78 +13,78 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public class WorldHelper {
-    public static boolean isDay(PlayerEntity player) {
-        long dayTime = player.world.getTimeOfDay() % 24000;
-        return dayTime >= 0 && dayTime < 12700;
-    }
+	public static boolean isDay(PlayerEntity player) {
+		long dayTime = player.world.getTimeOfDay() % 24000;
+		return dayTime >= 0 && dayTime < 12700;
+	}
 
-    public static boolean isNight(PlayerEntity player) {
-        long dayTime = player.world.getTimeOfDay() % 24000;
-        return dayTime >= 12700;
-    }
+	public static boolean isNight(PlayerEntity player) {
+		long dayTime = player.world.getTimeOfDay() % 24000;
+		return dayTime >= 12700;
+	}
 
-    public static boolean isThundering(PlayerEntity player) {
-        return player.world.isThundering();
-    }
+	public static boolean isThundering(PlayerEntity player) {
+		return player.world.isThundering();
+	}
 
-    public static boolean isOutside(PlayerEntity player) {
-        if (player.isSubmergedInWater()) return false;
+	public static boolean isOutside(PlayerEntity player) {
+		if (player.isSubmergedInWater()) return false;
 
-        int blocks = 24;
-        int start = 1;
+		int blocks = 24;
+		int start = 1;
 
-        BlockPos playerPos = player.getBlockPos();
+		BlockPos playerPos = player.getBlockPos();
 
-        if (player.world.isSkyVisible(playerPos)) return true;
-        if (player.world.isSkyVisibleAllowingSea(playerPos)) return true;
+		if (player.world.isSkyVisible(playerPos)) return true;
+		if (player.world.isSkyVisibleAllowingSea(playerPos)) return true;
 
-        for (int i = start; i < start + blocks; i++) {
-            BlockPos check = new BlockPos(playerPos.getX(), playerPos.getY() + i, playerPos.getZ());
-            BlockState state = player.world.getBlockState(check);
-            Block block = state.getBlock();
+		for (int i = start; i < start + blocks; i++) {
+			BlockPos check = new BlockPos(playerPos.getX(), playerPos.getY() + i, playerPos.getZ());
+			BlockState state = player.world.getBlockState(check);
+			Block block = state.getBlock();
 
-            if (player.world.isAir(check)) continue;
+			if (player.world.isAir(check)) continue;
 
-            if (!state.isOpaque()) continue;
+			if (!state.isOpaque()) continue;
 
-            if (player.world.isSkyVisible(check)) return true;
-            if (player.world.isSkyVisibleAllowingSea(check)) return true;
-            if (state.isOpaque()) return false;
-        }
+			if (player.world.isSkyVisible(check)) return true;
+			if (player.world.isSkyVisibleAllowingSea(check)) return true;
+			if (state.isOpaque()) return false;
+		}
 
-        return player.world.isSkyVisible(playerPos.up(blocks));
-    }
+		return player.world.isSkyVisible(playerPos.up(blocks));
+	}
 
-    public static float distanceFromGround(PlayerEntity player, int check) {
-        var level = player.world;
-        var pos = player.getBlockPos();
-        var playerHeight = pos.getY();
+	public static float distanceFromGround(PlayerEntity player, int check) {
+		var level = player.world;
+		var pos = player.getBlockPos();
+		var playerHeight = pos.getY();
 
-        // Sample points.
-        var samples = List.of(
-            pos.east(check),
-            pos.west(check),
-            pos.north(check),
-            pos.south(check)
-        );
+		// Sample points.
+		var samples = List.of(
+			pos.east(check),
+			pos.west(check),
+			pos.north(check),
+			pos.south(check)
+		);
 
-        int avg = 0;
-        for (BlockPos sample : samples) {
-            avg += level.getTopY(Heightmap.Type.WORLD_SURFACE, sample.getX(), sample.getZ());
-        }
-        avg /= samples.size();
-	    return Math.max(0.0F, playerHeight - avg);
-    }
+		int avg = 0;
+		for (BlockPos sample : samples) {
+			avg += level.getTopY(Heightmap.Type.WORLD_SURFACE, sample.getX(), sample.getZ());
+		}
+		avg /= samples.size();
+		return Math.max(0.0F, playerHeight - avg);
+	}
 
-    public static boolean isBelowSeaLevel(PlayerEntity player) {
-        return player.getBlockPos().getY() < player.world.getSeaLevel();
-    }
+	public static boolean isBelowSeaLevel(PlayerEntity player) {
+		return player.getBlockPos().getY() < player.world.getSeaLevel();
+	}
 
-    public static double getDistanceSquared(BlockPos pos1, BlockPos pos2) {
-        double d0 = pos1.getX();
-        double d1 = pos1.getZ();
-        double d2 = d0 - pos2.getX();
-        double d3 = d1 - pos2.getZ();
-        return d2 * d2 + d3 * d3;
-    }
+	public static double getDistanceSquared(BlockPos pos1, BlockPos pos2) {
+		double d0 = pos1.getX();
+		double d1 = pos1.getZ();
+		double d2 = d0 - pos2.getX();
+		double d3 = d1 - pos2.getZ();
+		return d2 * d2 + d3 * d3;
+	}
 }
