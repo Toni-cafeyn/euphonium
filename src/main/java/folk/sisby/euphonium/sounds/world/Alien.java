@@ -8,45 +8,45 @@ import folk.sisby.euphonium.sound.SoundHandler;
 import folk.sisby.euphonium.sound.WorldSound;
 import folk.sisby.euphonium.sounds.biome.TheEnd;
 import net.minecraft.sound.SoundEvent;
- import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
- public class Alien implements ISoundType<WorldSound> {
-    public static SoundEvent SOUND;
+public class Alien implements ISoundType<WorldSound> {
+	public static SoundEvent SOUND;
 
-    public Alien() {
-        SOUND = SoundHelper.sound(EuphoniumClient.id("world.alien"));
-    }
+	public Alien() {
+		SOUND = SoundHelper.sound(EuphoniumClient.id("world.alien"));
+	}
 
-    public void addSounds(SoundHandler<WorldSound> handler) {
-        if (!EuphoniumClient.CONFIG.worldAmbience.alien) return;
+	public void addSounds(SoundHandler<WorldSound> handler) {
+		if (!EuphoniumClient.CONFIG.worldAmbience.alien) return;
 
-        handler.getSounds().add(new RepeatedWorldSound(handler.getPlayer()) {
-            @Override
-            public boolean isValidSituationCondition() {
-                var holder = getBiomeHolder(player.getBlockPos());
-                return TheEnd.VALID_BIOME.test(holder);
-            }
+		handler.getSounds().add(new RepeatedWorldSound(handler.getPlayer()) {
+			@Override
+			public boolean isValidSituationCondition() {
+				var holder = getBiomeHolder(player.getBlockPos());
+				return TheEnd.VALID_BIOME.test(holder);
+			}
 
-            @Override
-            public boolean isValidPlayerCondition() {
-                return true;
-            }
+			@Override
+			public boolean isValidPlayerCondition() {
+				return true;
+			}
 
-            @Nullable
-            @Override
-            public SoundEvent getSound() {
-                return SOUND;
-            }
+			@Nullable
+			@Override
+			public SoundEvent getSound() {
+				return SOUND;
+			}
 
-            @Override
-            public int getDelay() {
-                return level.random.nextInt(400) + 300;
-            }
+			@Override
+			public int getDelay() {
+				return level.random.nextInt(400) + 300;
+			}
 
-            @Override
-            public float getVolume() {
-                return 0.85F;
-            }
-        });
-    }
+			@Override
+			public float getVolume() {
+				return 0.85F;
+			}
+		});
+	}
 }

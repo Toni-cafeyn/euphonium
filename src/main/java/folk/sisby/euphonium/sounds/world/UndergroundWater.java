@@ -1,73 +1,73 @@
- package folk.sisby.euphonium.sounds.world;
+package folk.sisby.euphonium.sounds.world;
 
- import folk.sisby.euphonium.EuphoniumClient;
- import folk.sisby.euphonium.helper.SoundHelper;
- import folk.sisby.euphonium.helper.WorldHelper;
- import folk.sisby.euphonium.sound.ISoundType;
- import folk.sisby.euphonium.sound.RepeatedWorldSound;
- import folk.sisby.euphonium.sound.SoundHandler;
- import folk.sisby.euphonium.sound.WorldSound;
-import org.jetbrains.annotations.Nullable;
-
- import java.util.Optional;
+import folk.sisby.euphonium.EuphoniumClient;
+import folk.sisby.euphonium.helper.SoundHelper;
+import folk.sisby.euphonium.helper.WorldHelper;
+import folk.sisby.euphonium.sound.ISoundType;
+import folk.sisby.euphonium.sound.RepeatedWorldSound;
+import folk.sisby.euphonium.sound.SoundHandler;
+import folk.sisby.euphonium.sound.WorldSound;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
- public class UndergroundWater implements ISoundType<WorldSound> {
-     public static SoundEvent SOUND;
+import java.util.Optional;
 
-     public UndergroundWater() {
-         SOUND = SoundHelper.sound(EuphoniumClient.id("world.underground_water"));
-     }
+public class UndergroundWater implements ISoundType<WorldSound> {
+	public static SoundEvent SOUND;
 
-     public void addSounds(SoundHandler<WorldSound> handler) {
-         if (!EuphoniumClient.CONFIG.worldAmbience.undergroundWater) return;
+	public UndergroundWater() {
+		SOUND = SoundHelper.sound(EuphoniumClient.id("world.underground_water"));
+	}
 
-         handler.getSounds().add(new RepeatedWorldSound(handler.getPlayer()) {
-             @Override
-             public boolean isValidSituationCondition() {
-                 Optional<BlockPos> optWater = BlockPos.findClosest(player.getBlockPos(), 12, 8, pos -> {
-                     Block block = level.getBlockState(pos).getBlock();
-                     return block == Blocks.WATER;
-                 });
+	public void addSounds(SoundHandler<WorldSound> handler) {
+		if (!EuphoniumClient.CONFIG.worldAmbience.undergroundWater) return;
 
-                 if (optWater.isPresent()) {
-                     setPos(optWater.get());
-                     return true;
-                 }
+		handler.getSounds().add(new RepeatedWorldSound(handler.getPlayer()) {
+			@Override
+			public boolean isValidSituationCondition() {
+				Optional<BlockPos> optWater = BlockPos.findClosest(player.getBlockPos(), 12, 8, pos -> {
+					Block block = level.getBlockState(pos).getBlock();
+					return block == Blocks.WATER;
+				});
 
-                 return false;
-             }
+				if (optWater.isPresent()) {
+					setPos(optWater.get());
+					return true;
+				}
 
-             @Override
-             public boolean isValidPlayerCondition() {
-                 return !WorldHelper.isOutside(player)
-                     && !player.isSubmergedInWater()
-                     && WorldHelper.isBelowSeaLevel(player);
-             }
+				return false;
+			}
 
-             @Nullable
-             @Override
-             public SoundEvent getSound() {
-                 return SOUND;
-             }
+			@Override
+			public boolean isValidPlayerCondition() {
+				return !WorldHelper.isOutside(player)
+					&& !player.isSubmergedInWater()
+					&& WorldHelper.isBelowSeaLevel(player);
+			}
 
-             @Override
-             public int getDelay() {
-                 return level.random.nextInt(150) + 120;
-             }
+			@Nullable
+			@Override
+			public SoundEvent getSound() {
+				return SOUND;
+			}
 
-             @Override
-             public float getVolume() {
-                 return 0.3F;
-             }
+			@Override
+			public int getDelay() {
+				return level.random.nextInt(150) + 120;
+			}
 
-             @Override
-             public float getPitch() {
-                 return 0.77F + (0.3F * level.random.nextFloat());
-             }
-         });
-     }
- }
+			@Override
+			public float getVolume() {
+				return 0.3F;
+			}
+
+			@Override
+			public float getPitch() {
+				return 0.77F + (0.3F * level.random.nextFloat());
+			}
+		});
+	}
+}

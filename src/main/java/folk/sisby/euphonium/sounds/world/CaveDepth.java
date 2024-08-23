@@ -12,48 +12,48 @@ import net.minecraft.world.biome.BiomeKeys;
 import org.jetbrains.annotations.Nullable;
 
 public class CaveDepth implements ISoundType<WorldSound> {
-    public static SoundEvent SOUND;
+	public static SoundEvent SOUND;
 
-    public CaveDepth() {
-        SOUND = SoundHelper.sound(EuphoniumClient.id("world.deep_cave"));
-    }
+	public CaveDepth() {
+		SOUND = SoundHelper.sound(EuphoniumClient.id("world.deep_cave"));
+	}
 
-    @Override
-    public void addSounds(SoundHandler<WorldSound> handler) {
-        if (!EuphoniumClient.CONFIG.worldAmbience.caveDepth) return;
+	@Override
+	public void addSounds(SoundHandler<WorldSound> handler) {
+		if (!EuphoniumClient.CONFIG.worldAmbience.caveDepth) return;
 
-        handler.getSounds().add(new LoopedWorldSound(handler.getPlayer()) {
-            @Override
-            public boolean isValidSituationCondition() {
-                var pos = player.getBlockPos();
+		handler.getSounds().add(new LoopedWorldSound(handler.getPlayer()) {
+			@Override
+			public boolean isValidSituationCondition() {
+				var pos = player.getBlockPos();
 
-                // Don't play this if the player is in the Deep Dark, the combined sounds are too intense.
-                var key = getBiomeKey(pos);
-                if (key == BiomeKeys.DEEP_DARK) {
-                    return false;
-                }
+				// Don't play this if the player is in the Deep Dark, the combined sounds are too intense.
+				var key = getBiomeKey(pos);
+				if (key == BiomeKeys.DEEP_DARK) {
+					return false;
+				}
 
-                if (!EuphoniumWorld.VALID_CAVE_DIMENSIONS.contains(level.getRegistryKey().getValue())) {
-                    return false;
-                }
+				if (!EuphoniumWorld.VALID_CAVE_DIMENSIONS.contains(level.getRegistryKey().getValue())) {
+					return false;
+				}
 
-                var light = level.getLightLevel(pos);
-                var bottom = level.getBottomY() < 0 ? 0 : 32;
-                return !level.isSkyVisibleAllowingSea(pos)
-                    && pos.getY() <= bottom
-                    && light < EuphoniumClient.CONFIG.worldAmbience.caveLightLevel;
-            }
+				var light = level.getLightLevel(pos);
+				var bottom = level.getBottomY() < 0 ? 0 : 32;
+				return !level.isSkyVisibleAllowingSea(pos)
+					&& pos.getY() <= bottom
+					&& light < EuphoniumClient.CONFIG.worldAmbience.caveLightLevel;
+			}
 
-            @Override
-            public boolean isValidPlayerCondition() {
-                return !player.isSubmergedInWater();
-            }
+			@Override
+			public boolean isValidPlayerCondition() {
+				return !player.isSubmergedInWater();
+			}
 
-            @Nullable
-            @Override
-            public SoundEvent getSound() {
-                return SOUND;
-            }
-        });
-    }
+			@Nullable
+			@Override
+			public SoundEvent getSound() {
+				return SOUND;
+			}
+		});
+	}
 }

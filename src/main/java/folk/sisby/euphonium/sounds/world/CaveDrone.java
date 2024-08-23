@@ -12,42 +12,42 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 public class CaveDrone implements ISoundType<WorldSound> {
-    public static SoundEvent SOUND;
+	public static SoundEvent SOUND;
 
-    public CaveDrone() {
-        SOUND = SoundHelper.sound(EuphoniumClient.id("world.cave"));
-    }
+	public CaveDrone() {
+		SOUND = SoundHelper.sound(EuphoniumClient.id("world.cave"));
+	}
 
-    public void addSounds(SoundHandler<WorldSound> handler) {
-        if (!EuphoniumClient.CONFIG.worldAmbience.caveDrone) return;
+	public void addSounds(SoundHandler<WorldSound> handler) {
+		if (!EuphoniumClient.CONFIG.worldAmbience.caveDrone) return;
 
-        handler.getSounds().add(new LoopedWorldSound(handler.getPlayer()) {
-            @Override
-            public boolean isValidSituationCondition() {
-                BlockPos pos = player.getBlockPos();
-                int light = level.getLightLevel(pos);
+		handler.getSounds().add(new LoopedWorldSound(handler.getPlayer()) {
+			@Override
+			public boolean isValidSituationCondition() {
+				BlockPos pos = player.getBlockPos();
+				int light = level.getLightLevel(pos);
 
-                if (!EuphoniumWorld.VALID_CAVE_DIMENSIONS.contains(level.getRegistryKey().getValue())) {
-                    return false;
-                }
+				if (!EuphoniumWorld.VALID_CAVE_DIMENSIONS.contains(level.getRegistryKey().getValue())) {
+					return false;
+				}
 
-                if (!level.isSkyVisibleAllowingSea(pos) && pos.getY() <= player.getWorld().getSeaLevel()) {
-                    return pos.getY() <= EuphoniumClient.CONFIG.worldAmbience.caveDroneDepth || light <= EuphoniumClient.CONFIG.worldAmbience.caveLightLevel;
-                }
+				if (!level.isSkyVisibleAllowingSea(pos) && pos.getY() <= player.getWorld().getSeaLevel()) {
+					return pos.getY() <= EuphoniumClient.CONFIG.worldAmbience.caveDroneDepth || light <= EuphoniumClient.CONFIG.worldAmbience.caveLightLevel;
+				}
 
-                return false;
-            }
+				return false;
+			}
 
-            @Override
-            public boolean isValidPlayerCondition() {
-                return !player.isSubmergedInWater();
-            }
+			@Override
+			public boolean isValidPlayerCondition() {
+				return !player.isSubmergedInWater();
+			}
 
-            @Nullable
-            @Override
-            public SoundEvent getSound() {
-                return SOUND;
-            }
-        });
-    }
+			@Nullable
+			@Override
+			public SoundEvent getSound() {
+				return SOUND;
+			}
+		});
+	}
 }

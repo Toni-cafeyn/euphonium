@@ -12,47 +12,47 @@ import folk.sisby.euphonium.sounds.biome.Savanna;
 import net.minecraft.sound.SoundEvent;
 import org.jetbrains.annotations.Nullable;
 
- public class NightPlains implements ISoundType<WorldSound> {
-     public static SoundEvent SOUND;
+public class NightPlains implements ISoundType<WorldSound> {
+	public static SoundEvent SOUND;
 
-     public NightPlains() {
-         SOUND = SoundHelper.sound(EuphoniumClient.id("world.nightplains"));
-     }
+	public NightPlains() {
+		SOUND = SoundHelper.sound(EuphoniumClient.id("world.nightplains"));
+	}
 
-     public void addSounds(SoundHandler<WorldSound> handler) {
-         if (!EuphoniumClient.CONFIG.worldAmbience.nightPlains) return;
+	public void addSounds(SoundHandler<WorldSound> handler) {
+		if (!EuphoniumClient.CONFIG.worldAmbience.nightPlains) return;
 
-         handler.getSounds().add(new SurfaceWorldSound(handler.getPlayer()) {
-             @Override
-             public boolean isValidSituationCondition() {
-                 var holder = getBiomeHolder(player.getBlockPos());
-                 var key = getBiomeKey(player.getBlockPos());
-                 return Plains.VALID_BIOME.test(holder, key)
-                     || Savanna.VALID_BIOME.test(holder);
-             }
+		handler.getSounds().add(new SurfaceWorldSound(handler.getPlayer()) {
+			@Override
+			public boolean isValidSituationCondition() {
+				var holder = getBiomeHolder(player.getBlockPos());
+				var key = getBiomeKey(player.getBlockPos());
+				return Plains.VALID_BIOME.test(holder, key)
+					|| Savanna.VALID_BIOME.test(holder);
+			}
 
-             @Override
-             public boolean isValidPlayerCondition() {
-                 return WorldHelper.isNight(player)
-                     && WorldHelper.isOutside(player)
-                     && !WorldHelper.isBelowSeaLevel(player);
-             }
+			@Override
+			public boolean isValidPlayerCondition() {
+				return WorldHelper.isNight(player)
+					&& WorldHelper.isOutside(player)
+					&& !WorldHelper.isBelowSeaLevel(player);
+			}
 
-             @Nullable
-             @Override
-             public SoundEvent getSound() {
-                 return SOUND;
-             }
+			@Nullable
+			@Override
+			public SoundEvent getSound() {
+				return SOUND;
+			}
 
-             @Override
-             public int getDelay() {
-                 return level.random.nextInt(500) + 500;
-             }
+			@Override
+			public int getDelay() {
+				return level.random.nextInt(500) + 500;
+			}
 
-             @Override
-             public float getVolume() {
-                 return 0.6F;
-             }
-         });
-     }
- }
+			@Override
+			public float getVolume() {
+				return 0.6F;
+			}
+		});
+	}
+}

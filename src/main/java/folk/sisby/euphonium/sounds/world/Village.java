@@ -1,65 +1,65 @@
- package folk.sisby.euphonium.sounds.world;
+package folk.sisby.euphonium.sounds.world;
 
- import folk.sisby.euphonium.EuphoniumClient;
- import folk.sisby.euphonium.helper.SoundHelper;
- import folk.sisby.euphonium.helper.WorldHelper;
- import folk.sisby.euphonium.sound.ISoundType;
- import folk.sisby.euphonium.sound.SoundHandler;
- import folk.sisby.euphonium.sound.SurfaceWorldSound;
- import folk.sisby.euphonium.sound.WorldSound;
-import org.jetbrains.annotations.Nullable;
-
- import java.util.List;
+import folk.sisby.euphonium.EuphoniumClient;
+import folk.sisby.euphonium.helper.SoundHelper;
+import folk.sisby.euphonium.helper.WorldHelper;
+import folk.sisby.euphonium.sound.ISoundType;
+import folk.sisby.euphonium.sound.SoundHandler;
+import folk.sisby.euphonium.sound.SurfaceWorldSound;
+import folk.sisby.euphonium.sound.WorldSound;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.Box;
+import org.jetbrains.annotations.Nullable;
 
- public class Village implements ISoundType<WorldSound> {
-     public static SoundEvent SOUND;
+import java.util.List;
 
-     public Village() {
-         SOUND = SoundHelper.sound(EuphoniumClient.id("world.village"));
-     }
+public class Village implements ISoundType<WorldSound> {
+	public static SoundEvent SOUND;
 
-     public void addSounds(SoundHandler<WorldSound> handler) {
-         if (!EuphoniumClient.CONFIG.worldAmbience.village) return;
+	public Village() {
+		SOUND = SoundHelper.sound(EuphoniumClient.id("world.village"));
+	}
 
-         handler.getSounds().add(new SurfaceWorldSound(handler.getPlayer()) {
-             @Override
-             public boolean isValidSituationCondition() {
-                 Box bb = new Box(player.getBlockPos()).expand(32);
-                 List<VillagerEntity> villagers = level.getNonSpectatingEntities(VillagerEntity.class, bb);
+	public void addSounds(SoundHandler<WorldSound> handler) {
+		if (!EuphoniumClient.CONFIG.worldAmbience.village) return;
 
-                 if (villagers.size() >= 2) {
-                     VillagerEntity villager = villagers.get(player.getRandom().nextInt(villagers.size()));
-                     setPos(villager.getBlockPos());
-                     return true;
-                 }
+		handler.getSounds().add(new SurfaceWorldSound(handler.getPlayer()) {
+			@Override
+			public boolean isValidSituationCondition() {
+				Box bb = new Box(player.getBlockPos()).expand(32);
+				List<VillagerEntity> villagers = level.getNonSpectatingEntities(VillagerEntity.class, bb);
 
-                 return false;
-             }
+				if (villagers.size() >= 2) {
+					VillagerEntity villager = villagers.get(player.getRandom().nextInt(villagers.size()));
+					setPos(villager.getBlockPos());
+					return true;
+				}
 
-             @Override
-             public boolean isValidPlayerCondition() {
-                 return super.isValidPlayerCondition()
-                     && !WorldHelper.isNight(player);
-             }
+				return false;
+			}
 
-             @Nullable
-             @Override
-             public SoundEvent getSound() {
-                 return SOUND;
-             }
+			@Override
+			public boolean isValidPlayerCondition() {
+				return super.isValidPlayerCondition()
+					&& !WorldHelper.isNight(player);
+			}
 
-             @Override
-             public int getDelay() {
-                 return level.random.nextInt(400) + 320;
-             }
+			@Nullable
+			@Override
+			public SoundEvent getSound() {
+				return SOUND;
+			}
 
-             @Override
-             public float getVolume() {
-                 return 0.82F;
-             }
-         });
-     }
- }
+			@Override
+			public int getDelay() {
+				return level.random.nextInt(400) + 320;
+			}
+
+			@Override
+			public float getVolume() {
+				return 0.82F;
+			}
+		});
+	}
+}
