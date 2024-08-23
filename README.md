@@ -9,7 +9,7 @@ Requires <a href="https://modrinth.com/mod/connector">Connector</a> and <a href=
 
 ## Features
 
-Charmonium (and Euphonium by extension) adds biome, structure, and world feature-specific ambient sound to minecraft.
+Charmonium (and therefore Euphonium) adds biome, structure, and environment-specific ambient sound to the game.
 
 By default, volume can be tweaked through the "Ambient Sounds" slider.
 
