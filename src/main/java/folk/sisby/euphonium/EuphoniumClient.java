@@ -13,7 +13,7 @@ public class EuphoniumClient implements ClientModInitializer {
 	public static EuphoniumConfig CONFIG = EuphoniumConfig.createToml(FabricLoader.getInstance().getConfigDir(), "", ID, EuphoniumConfig.class);
 
 	public static Identifier id(String path) {
-		return new Identifier(ID, path);
+		return Identifier.of(ID, path);
 	}
 
 	@Override
