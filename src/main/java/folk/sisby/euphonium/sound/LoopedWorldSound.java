@@ -1,19 +1,18 @@
 package folk.sisby.euphonium.sound;
 
 import folk.sisby.euphonium.EuphoniumClient;
-import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
-import net.minecraft.world.entity.player.Player;
-
 import java.util.ConcurrentModificationException;
+import net.minecraft.client.sound.MovingSoundInstance;
+import net.minecraft.entity.player.PlayerEntity;
 
 public abstract class LoopedWorldSound extends WorldSound {
     protected LoopingSound soundInstance;
 
-    public LoopedWorldSound(Player player) {
+    public LoopedWorldSound(PlayerEntity player) {
         super(player);
     }
 
-    public AbstractTickableSoundInstance getSoundInstance() {
+    public MovingSoundInstance getSoundInstance() {
         return soundInstance;
     }
 

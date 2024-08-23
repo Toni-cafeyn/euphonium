@@ -1,17 +1,17 @@
- package folk.sisby.euphonium.sounds.world;
+package folk.sisby.euphonium.sounds.world;
 
- import folk.sisby.euphonium.EuphoniumClient;
- import folk.sisby.euphonium.helper.SoundHelper;
- import folk.sisby.euphonium.helper.WorldHelper;
- import folk.sisby.euphonium.sound.ISoundType;
- import folk.sisby.euphonium.sound.SoundHandler;
- import folk.sisby.euphonium.sound.SurfaceWorldSound;
- import folk.sisby.euphonium.sound.WorldSound;
- import folk.sisby.euphonium.sounds.biome.Badlands;
- import folk.sisby.euphonium.sounds.biome.Desert;
- import folk.sisby.euphonium.sounds.biome.Savanna;
- import net.minecraft.sounds.SoundEvent;
- import org.jetbrains.annotations.Nullable;
+import folk.sisby.euphonium.EuphoniumClient;
+import folk.sisby.euphonium.helper.SoundHelper;
+import folk.sisby.euphonium.helper.WorldHelper;
+import folk.sisby.euphonium.sound.ISoundType;
+import folk.sisby.euphonium.sound.SoundHandler;
+import folk.sisby.euphonium.sound.SurfaceWorldSound;
+import folk.sisby.euphonium.sound.WorldSound;
+import folk.sisby.euphonium.sounds.biome.Badlands;
+import folk.sisby.euphonium.sounds.biome.Desert;
+import folk.sisby.euphonium.sounds.biome.Savanna;
+import net.minecraft.sound.SoundEvent;
+import org.jetbrains.annotations.Nullable;
 
  public class Dry implements ISoundType<WorldSound> {
      public static SoundEvent SOUND;
@@ -26,7 +26,7 @@
          handler.getSounds().add(new SurfaceWorldSound(handler.getPlayer()) {
              @Override
              public boolean isValidSituationCondition() {
-                 var holder = getBiomeHolder(player.blockPosition());
+                 var holder = getBiomeHolder(player.getBlockPos());
 
                  return Badlands.VALID_BIOME.test(holder)
                      || Desert.VALID_BIOME.test(holder)

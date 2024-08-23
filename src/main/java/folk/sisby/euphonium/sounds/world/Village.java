@@ -7,12 +7,12 @@
  import folk.sisby.euphonium.sound.SoundHandler;
  import folk.sisby.euphonium.sound.SurfaceWorldSound;
  import folk.sisby.euphonium.sound.WorldSound;
- import net.minecraft.sounds.SoundEvent;
- import net.minecraft.world.entity.npc.Villager;
- import net.minecraft.world.phys.AABB;
- import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
  import java.util.List;
+import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.math.Box;
 
  public class Village implements ISoundType<WorldSound> {
      public static SoundEvent SOUND;
@@ -27,12 +27,12 @@
          handler.getSounds().add(new SurfaceWorldSound(handler.getPlayer()) {
              @Override
              public boolean isValidSituationCondition() {
-                 AABB bb = new AABB(player.blockPosition()).inflate(32);
-                 List<Villager> villagers = level.getEntitiesOfClass(Villager.class, bb);
+                 Box bb = new Box(player.getBlockPos()).expand(32);
+                 List<VillagerEntity> villagers = level.getNonSpectatingEntities(VillagerEntity.class, bb);
 
                  if (villagers.size() >= 2) {
-                     Villager villager = villagers.get(player.getRandom().nextInt(villagers.size()));
-                     setPos(villager.blockPosition());
+                     VillagerEntity villager = villagers.get(player.getRandom().nextInt(villagers.size()));
+                     setPos(villager.getBlockPos());
                      return true;
                  }
 

@@ -5,13 +5,12 @@ import folk.sisby.kaleido.lib.quiltconfig.api.annotations.Comment;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.FloatRange;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.IntegerRange;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.ValueList;
-import net.minecraft.sounds.SoundSource;
-
 import java.util.List;
+import net.minecraft.sound.SoundCategory;
 
 public class EuphoniumConfig extends WrappedConfig {
     @Comment("The channel that Euphonium will use for playing sounds")
-    public final SoundSource channel = SoundSource.AMBIENT;
+    public final SoundCategory channel = SoundCategory.AMBIENT;
 
 	@Comment("Plays ambient background sound according to the biome and time of day")
 	public final Boolean biomeAmbienceEnabled = true;
@@ -20,7 +19,7 @@ public class EuphoniumConfig extends WrappedConfig {
 	public final Boolean worldAmbienceEnabled = true;
 
 	public final BiomeAmbience biomeAmbience = new BiomeAmbience();
-	public static final class BiomeAmbience implements Section {
+	public static final class BiomeAmbience implements folk.sisby.kaleido.api.WrappedConfig.Section {
 		@Comment("Number of blocks above the ground that biome ambience will be silenced")
 		@Comment("Set to zero to disable")
 		public final Integer cullSoundAboveGround = 32;
@@ -38,7 +37,7 @@ public class EuphoniumConfig extends WrappedConfig {
 	}
 
 	public final WorldAmbience worldAmbience = new WorldAmbience();
-	public static final class WorldAmbience implements Section {
+	public static final class WorldAmbience implements folk.sisby.kaleido.api.WrappedConfig.Section {
 		@Comment("Affects the volume of all world ambient sounds")
 		@FloatRange(min=0.0D, max=1.0D)
 		public final Double volumeScaling = 0.55D;

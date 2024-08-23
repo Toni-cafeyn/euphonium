@@ -2,12 +2,12 @@ package folk.sisby.euphonium.sound;
 
 import folk.sisby.euphonium.EuphoniumClient;
 import folk.sisby.euphonium.helper.WorldHelper;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.entity.player.PlayerEntity;
 
 public abstract class SurfaceBiomeSound extends BiomeSound {
     protected boolean playWhenThundering;
 
-    protected SurfaceBiomeSound(Player player, boolean playWhenThundering) {
+    protected SurfaceBiomeSound(PlayerEntity player, boolean playWhenThundering) {
         super(player);
         this.playWhenThundering = playWhenThundering;
     }

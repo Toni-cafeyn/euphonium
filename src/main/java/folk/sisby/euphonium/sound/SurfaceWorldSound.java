@@ -2,10 +2,10 @@ package folk.sisby.euphonium.sound;
 
 import folk.sisby.euphonium.EuphoniumClient;
 import folk.sisby.euphonium.helper.WorldHelper;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.entity.player.PlayerEntity;
 
 public abstract class SurfaceWorldSound extends RepeatedWorldSound {
-    protected SurfaceWorldSound(Player player) {
+    protected SurfaceWorldSound(PlayerEntity player) {
         super(player);
     }
 

@@ -7,8 +7,8 @@ import folk.sisby.euphonium.sound.ISoundType;
 import folk.sisby.euphonium.sound.LoopedWorldSound;
 import folk.sisby.euphonium.sound.SoundHandler;
 import folk.sisby.euphonium.sound.WorldSound;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.world.biome.BiomeKeys;
 import org.jetbrains.annotations.Nullable;
 
 public class CaveDepth implements ISoundType<WorldSound> {
@@ -25,28 +25,28 @@ public class CaveDepth implements ISoundType<WorldSound> {
         handler.getSounds().add(new LoopedWorldSound(handler.getPlayer()) {
             @Override
             public boolean isValidSituationCondition() {
-                var pos = player.blockPosition();
+                var pos = player.getBlockPos();
 
                 // Don't play this if the player is in the Deep Dark, the combined sounds are too intense.
                 var key = getBiomeKey(pos);
-                if (key == Biomes.DEEP_DARK) {
+                if (key == BiomeKeys.DEEP_DARK) {
                     return false;
                 }
 
-                if (!EuphoniumWorld.VALID_CAVE_DIMENSIONS.contains(level.dimension().location())) {
+                if (!EuphoniumWorld.VALID_CAVE_DIMENSIONS.contains(level.getRegistryKey().getValue())) {
                     return false;
                 }
 
-                var light = level.getMaxLocalRawBrightness(pos);
-                var bottom = level.getMinBuildHeight() < 0 ? 0 : 32;
-                return !level.canSeeSkyFromBelowWater(pos)
+                var light = level.getLightLevel(pos);
+                var bottom = level.getBottomY() < 0 ? 0 : 32;
+                return !level.isSkyVisibleAllowingSea(pos)
                     && pos.getY() <= bottom
                     && light < EuphoniumClient.CONFIG.worldAmbience.caveLightLevel;
             }
 
             @Override
             public boolean isValidPlayerCondition() {
-                return !player.isUnderWater();
+                return !player.isSubmergedInWater();
             }
 
             @Nullable
