@@ -55,7 +55,7 @@ public class EuphoniumBiome {
 			ClientEntityEvents.ENTITY_LOAD.register(EuphoniumBiome::handleClientEntityJoin);
 			ClientEntityEvents.ENTITY_UNLOAD.register(EuphoniumBiome::handleClientEntityLeave);
 			ClientTickEvents.END_CLIENT_TICK.register(EuphoniumBiome::handleClientTick);
-			EuphoniumClient.CONFIG.biomeAmbience.dimensions.forEach(dim -> VALID_DIMENSIONS.add(new Identifier(dim)));
+			EuphoniumClient.CONFIG.biomeAmbience.dimensions.forEach(dim -> VALID_DIMENSIONS.add(Identifier.tryParse(dim)));
 		}
 	}
 
