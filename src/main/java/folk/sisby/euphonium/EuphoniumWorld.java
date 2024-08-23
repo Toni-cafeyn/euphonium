@@ -55,7 +55,7 @@ public class EuphoniumWorld {
 			ClientEntityEvents.ENTITY_LOAD.register(EuphoniumWorld::handleClientEntityJoin);
 			ClientEntityEvents.ENTITY_UNLOAD.register(EuphoniumWorld::handleClientEntityLeave);
 			ClientTickEvents.END_CLIENT_TICK.register(EuphoniumWorld::handleClientTick);
-			EuphoniumClient.CONFIG.worldAmbience.caveDimensions.forEach(dim -> VALID_CAVE_DIMENSIONS.add(new Identifier(dim)));
+			EuphoniumClient.CONFIG.worldAmbience.caveDimensions.forEach(dim -> VALID_CAVE_DIMENSIONS.add(Identifier.tryParse(dim)));
 		}
 	}
 
