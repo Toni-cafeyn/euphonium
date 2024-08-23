@@ -5,60 +5,60 @@ import folk.sisby.euphonium.sound.ISoundType;
 import folk.sisby.euphonium.sound.RepeatedWorldSound;
 import folk.sisby.euphonium.sound.SoundHandler;
 import folk.sisby.euphonium.sound.WorldSound;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
 import net.minecraft.block.Blocks;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
- public class Mineshaft implements ISoundType<WorldSound> {
-     public static SoundEvent SOUND;
+import java.util.Optional;
 
-     public Mineshaft() {
-         SOUND = SoundEvent.of(EuphoniumClient.id("world.mineshaft"));
-     }
+public class Mineshaft implements ISoundType<WorldSound> {
+	public static SoundEvent SOUND;
 
-     public void addSounds(SoundHandler<WorldSound> handler) {
-         if (!EuphoniumClient.CONFIG.worldAmbience.mineshaft) return;
+	public Mineshaft() {
+		SOUND = SoundEvent.of(EuphoniumClient.id("world.mineshaft"));
+	}
 
-         handler.getSounds().add(new RepeatedWorldSound(handler.getPlayer()) {
-             @Override
-             public boolean isValidSituationCondition() {
-                 // Find the closest rail block in the mineshaft.  This will become the sound source.
-                 Optional<BlockPos> rail = BlockPos.findClosest(player.getBlockPos(), 8, 16, pos -> {
-                     var block = level.getBlockState(pos).getBlock();
-                     return block == Blocks.RAIL;
-                 });
+	public void addSounds(SoundHandler<WorldSound> handler) {
+		if (!EuphoniumClient.CONFIG.worldAmbience.mineshaft) return;
 
-                 if (rail.isPresent()) {
-                     setPos(rail.get());
-                     return true;
-                 }
+		handler.getSounds().add(new RepeatedWorldSound(handler.getPlayer()) {
+			@Override
+			public boolean isValidSituationCondition() {
+				// Find the closest rail block in the mineshaft.  This will become the sound source.
+				Optional<BlockPos> rail = BlockPos.findClosest(player.getBlockPos(), 8, 16, pos -> {
+					var block = level.getBlockState(pos).getBlock();
+					return block == Blocks.RAIL;
+				});
 
-                 return false;
-             }
+				if (rail.isPresent()) {
+					setPos(rail.get());
+					return true;
+				}
 
-             @Override
-             public boolean isValidPlayerCondition() {
-                 return true;
-             }
+				return false;
+			}
 
-             @Nullable
-             @Override
-             public SoundEvent getSound() {
-                 return SOUND;
-             }
+			@Override
+			public boolean isValidPlayerCondition() {
+				return true;
+			}
 
-             @Override
-             public int getDelay() {
-                 return level.random.nextInt(300) + 300;
-             }
+			@Nullable
+			@Override
+			public SoundEvent getSound() {
+				return SOUND;
+			}
 
-             @Override
-             public float getVolume() {
-                 return 0.8F;
-             }
-         });
-     }
- }
+			@Override
+			public int getDelay() {
+				return level.random.nextInt(300) + 300;
+			}
+
+			@Override
+			public float getVolume() {
+				return 0.8F;
+			}
+		});
+	}
+}

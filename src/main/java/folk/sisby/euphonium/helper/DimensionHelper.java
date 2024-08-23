@@ -18,52 +18,52 @@ import java.util.function.Consumer;
  */
 @SuppressWarnings({"unused"})
 public class DimensionHelper {
-    private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger();
 
-    public static boolean isOverworld(World world) {
-        return world.getRegistryKey() == World.OVERWORLD;
-    }
+	public static boolean isOverworld(World world) {
+		return world.getRegistryKey() == World.OVERWORLD;
+	}
 
-    public static boolean isNether(World world) {
-        return world.getRegistryKey() == World.NETHER;
-    }
+	public static boolean isNether(World world) {
+		return world.getRegistryKey() == World.NETHER;
+	}
 
-    public static boolean isEnd(World world) {
-        return world.getRegistryKey() == World.END;
-    }
+	public static boolean isEnd(World world) {
+		return world.getRegistryKey() == World.END;
+	}
 
-    public static boolean isDimension(World world, Identifier dimension) {
-        return getDimension(world).equals(dimension);
-    }
+	public static boolean isDimension(World world, Identifier dimension) {
+		return getDimension(world).equals(dimension);
+	}
 
-    public static boolean isDimension(World world, RegistryKey<World> key) {
-        return world.getRegistryKey().equals(key);
-    }
+	public static boolean isDimension(World world, RegistryKey<World> key) {
+		return world.getRegistryKey().equals(key);
+	}
 
-    public static Identifier getDimension(World world) {
-        RegistryKey<World> key = world.getRegistryKey();
-        return key.getValue();
-    }
+	public static Identifier getDimension(World world) {
+		RegistryKey<World> key = world.getRegistryKey();
+		return key.getValue();
+	}
 
-    @Nullable
-    public static RegistryKey<World> getDimension(Identifier dim) {
-        if (World.OVERWORLD.getValue().equals(dim)) {
-            return World.OVERWORLD;
-        } else if (World.NETHER.getValue().equals(dim)) {
-            return World.NETHER;
-        } else if (World.END.getValue().equals(dim)) {
-            return World.END;
-        }
+	@Nullable
+	public static RegistryKey<World> getDimension(Identifier dim) {
+		if (World.OVERWORLD.getValue().equals(dim)) {
+			return World.OVERWORLD;
+		} else if (World.NETHER.getValue().equals(dim)) {
+			return World.NETHER;
+		} else if (World.END.getValue().equals(dim)) {
+			return World.END;
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    public static void encodeDimension(RegistryKey<World> worldKey, Consumer<NbtElement> consumer) {
-        DataResult<NbtElement> result = World.CODEC.encodeStart(NbtOps.INSTANCE, worldKey);
-        result.resultOrPartial(LOGGER::error).ifPresent(consumer);
-    }
+	public static void encodeDimension(RegistryKey<World> worldKey, Consumer<NbtElement> consumer) {
+		DataResult<NbtElement> result = World.CODEC.encodeStart(NbtOps.INSTANCE, worldKey);
+		result.resultOrPartial(LOGGER::error).ifPresent(consumer);
+	}
 
-    public static Optional<RegistryKey<World>> decodeDimension(NbtElement nbt) {
-        return World.CODEC.parse(NbtOps.INSTANCE, nbt).result();
-    }
+	public static Optional<RegistryKey<World>> decodeDimension(NbtElement nbt) {
+		return World.CODEC.parse(NbtOps.INSTANCE, nbt).result();
+	}
 }
