@@ -15,7 +15,7 @@ public class NightPlains implements ISoundType<WorldSound> {
 	public static SoundEvent SOUND;
 
 	public NightPlains() {
-		SOUND = SoundEvent.of(EuphoniumClient.id("world.nightplains"));
+		SOUND = SoundEvent.of(EuphoniumClient.id("world.night_plains"));
 	}
 
 	public void addSounds(SoundHandler<WorldSound> handler) {

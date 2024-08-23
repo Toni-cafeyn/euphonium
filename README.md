@@ -1,33 +1,37 @@
 <!--suppress HtmlDeprecatedTag, XmlDeprecatedElement -->
 
 <center>
+<img alt="a regular screenshot of a minecraft forest - what did you expect?" src="https://cdn.modrinth.com/data/XH8cnjHW/images/8d675995eb6af57465e360a1720063d004389b79.png"/>
 Ambient sounds to fit vanilla.<br/>
 A backfork of <a href="https://modrinth.com/mod/charmonium">Charmonium</a>.<br/>
-Requires <a href="https://modrinth.com/mod/connector">Connector</a> and <a href="https://modrinth.com/mod/forgified-fabric-api">FFAPI</a> on forge.<br/>
+Requires <a href="https://modrinth.com/mod/connector">Connector</a> and <a href="https://modrinth.com/mod/forgified-fabric-api">FFAPI</a> on (neo)forge.<br/>
 </center>
 
----
+## Features
 
-Charmonium (and by extension this mod) adds biome, structure, and world feature-specific ambient sound to minecraft.
+Charmonium (and therefore Euphonium) adds biome, structure, and environment-specific ambient sound to the game.
 
-All types of ambience are toggleable, and by default the volume can be tweaked through the Ambient Sounds slider.
+By default, volume can be tweaked through the "Ambient Sounds" slider.
 
-### Design
+### Configuration
 
-This is a backport of the very shiny post-rewrite version of Charmonium.
+Euphonium can be configured via `config/euphonium.toml`, including:
+- Sound channel
+- Volume multiplier for world ambience
+- Toggles for each type of ambience
+- Tweaks for cave darkness ambience
 
-In place of the (1.20.2 only) Charmony API, Euphonium uses base fabric methods and an environment-agnostic version of Quilt Config ([Kaleido](https://github.com/sisby-folk/kaleido-config)) for a simple load-time toml configuration.
+## Design
 
-This makes Euphonium slightly less featureful (it has no config screen), but it *should* be very stable - thanks entirely to the quality of svenhjol's rewrite (there aren't even any mixins!).
+This is a fork and backport of Charmonium 6.0 - an excellent rewrite of the mod by svenhjol!
 
-We hope these changes can help preserve the mod and make it easier to maintain or port to awkward versions.
+Charmonium 6.0 can't be reliably built from source. It's API, Charmony, is also not source-visible.<br/>
+To remedy this, Euphonium has all new buildscripts and forgoes Charmony, using [Kaleido](//github.com/sisby-folk/kaleido-config) for a toml config.
 
----
-
-### Afterword
+## Afterword
 
 All mods are built on the work of many others.
 
 This mod is included in [Tinkerer's Quilt](https://modrinth.com/modpack/tinkerers-quilt) - our modpack about rediscovering vanilla.
 
-We're open to suggestions for how to implement stuff better - if you see something wonky and have an idea - let us know.
+We're open to better ways to implement our mods. If you see something odd and have an idea, let us know! 
