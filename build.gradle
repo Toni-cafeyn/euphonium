@@ -64,19 +64,20 @@ jar {
 }
 
 githubRelease {
-	token = System.getenv("GITHUB_TOKEN")
+	token = "$System.env.GITHUB_TOKEN"
 	owner = project.user
 	repo = slug
 	tagName = "v${baseVersion}+${tagBranch}"
 	targetCommitish = tagBranch
 	releaseAssets = remapJar
 	releaseName = "v${baseVersion}"
-	allowUploadToExisting = (tagBranch != branch)
+	allowUploadToExisting = true
+	generateReleaseNotes = true
 	body = !file("CHANGELOG.md").exists() ? "" : rootProject.file("CHANGELOG.md").text
 }
 
 modrinth {
-	token = System.getenv("MODRINTH_TOKEN")
+	token = "$System.env.MODRINTH_TOKEN"
 	projectId = slug
 	versionNumber = project.version
 	uploadFile = remapJar
