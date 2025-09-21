@@ -32,15 +32,15 @@ public abstract class RepeatedWorldSound extends WorldSound {
 
 		if (isValid) {
 			soundInstance = new SingleSound(getPlayer(), getSound(), (float) (getVolume() * getVolumeScaling()), getPitch(), getPos());
-			var manager = getSoundManager();
+                        try {
+                                var manager = getSoundManager();
 
-			try {
-				if (!manager.isPlaying(soundInstance)) {
-					manager.play(soundInstance);
-				}
-			} catch (ConcurrentModificationException e) {
-				EuphoniumClient.LOGGER.debug("{}: Exception in manager.play", this.getClass());
-			}
+                                if (!manager.isPlaying(soundInstance)) {
+                                        queueSound(soundInstance);
+                                }
+                        } catch (ConcurrentModificationException e) {
+                                EuphoniumClient.LOGGER.debug("{}: Exception in queueSound", this.getClass());
+                        }
 		}
 	}
 

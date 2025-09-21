@@ -70,11 +70,11 @@ public abstract class BiomeSound implements ISoundInstance {
 
 			if (!isPlaying()) {
 				soundInstance = new LoopingSound(player, getSound(), (float) volume, getPitch(), p -> isValid);
-				try {
-					getSoundManager().play(this.soundInstance);
-				} catch (ConcurrentModificationException e) {
-					log.debug("[{}] Exception in tick", this.getClass().getSimpleName());
-				}
+                                try {
+                                        queueSound(this.soundInstance);
+                                } catch (ConcurrentModificationException e) {
+                                        log.debug("[{}] Exception in tick", this.getClass().getSimpleName());
+                                }
 			} else {
 
 				// Adjust sound volume with a fade.

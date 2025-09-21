@@ -26,11 +26,11 @@ public abstract class LoopedWorldSound extends WorldSound {
 
 		if (isValid && !isPlaying()) {
 			soundInstance = new LoopingSound(player, getSound(), (float) (getVolume() * getVolumeScaling()), getPitch(), p -> isValid);
-			try {
-				getSoundManager().play(this.soundInstance);
-			} catch (ConcurrentModificationException e) {
-				EuphoniumClient.LOGGER.debug("{}: Exception in tick", this.getClass());
-			}
+                        try {
+                                queueSound(this.soundInstance);
+                        } catch (ConcurrentModificationException e) {
+                                EuphoniumClient.LOGGER.debug("{}: Exception in tick", this.getClass());
+                        }
 		}
 	}
 }
