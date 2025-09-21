@@ -37,10 +37,10 @@ processResources {
 		license       : license,
 		authors       : authors.split(", ").join("\",\n    \""),
 		members       : "${authors}",
-		mc            : compatibleVersions.split(", ")[0],
-		fl            : libs.versions.fl.get(),
-		fapi          : libs.versions.fapi.get()
-	]
+                mcVersion     : libs.versions.mc.get(),
+                fl            : libs.versions.fl.get(),
+                fapi          : libs.versions.fapi.get()
+        ]
 	inputs.properties(meta)
 	filesMatching("*.mod.json") { expand(meta) }
 	filesMatching("META-INF/*mods.toml") { expand(meta) }
