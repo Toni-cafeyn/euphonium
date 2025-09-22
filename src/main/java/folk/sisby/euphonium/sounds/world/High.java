@@ -22,8 +22,8 @@ public class High implements ISoundType<WorldSound> {
 
 		handler.getSounds().add(new RepeatedWorldSound(handler.getPlayer()) {
 			@Override
-			public boolean isValidSituationCondition() {
-				int top = level.getTopY() > 256 ? 200 : 150;
+                        public boolean isValidSituationCondition() {
+                                int top = level.getDimension().height() > 256 ? 200 : 150;
 
 				return level.getRegistryKey() == World.OVERWORLD
 					&& player.getBlockPos().getY() > top;
