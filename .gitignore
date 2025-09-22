@@ -32,3 +32,4 @@ datagen/out/
 
 # changelog
 CHANGELOG.md
+gradle/wrapper/gradle-wrapper.jar
