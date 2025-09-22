@@ -2,6 +2,7 @@ package folk.sisby.euphonium.sound;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.MovingSoundInstance;
+import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,6 +16,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.MappingResolver;
 
 @SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public interface ISoundInstance {
@@ -65,18 +69,13 @@ public interface ISoundInstance {
                 }
 
                 var manager = getSoundManager();
-                var queueMethod = QueueSoundMethodHolder.METHOD;
+                SoundInstance soundInstance = instance;
 
-                if (queueMethod != null) {
-                        try {
-                                queueMethod.invoke(manager, instance);
-                                return;
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                                throw new RuntimeException("Failed to invoke SoundManager queue method", e);
-                        }
+                if (QueueSoundMethodHolder.invoke(manager, soundInstance)) {
+                        return;
                 }
 
-                PlaySoundMethodHolder.invoke(manager, instance);
+                PlaySoundMethodHolder.invoke(manager, soundInstance);
         }
 
         default boolean isPlaying() {
@@ -108,10 +107,25 @@ public interface ISoundInstance {
                 private static final Method METHOD = findMethod();
 
                 private static Method findMethod() {
+                        Method method = SoundManagerMethodFinder.find("queueSound", SoundInstance.class);
+
+                        if (method == null) {
+                                method = SoundManagerMethodFinder.find("queueSound", MovingSoundInstance.class);
+                        }
+
+                        return method;
+                }
+
+                private static boolean invoke(SoundManager manager, SoundInstance instance) {
+                        if (METHOD == null) {
+                                return false;
+                        }
+
                         try {
-                                return SoundManager.class.getMethod("queueSound", MovingSoundInstance.class);
-                        } catch (NoSuchMethodException e) {
-                                return null;
+                                METHOD.invoke(manager, instance);
+                                return true;
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                                throw new RuntimeException("Failed to invoke SoundManager queue method", e);
                         }
                 }
         }
@@ -120,18 +134,16 @@ public interface ISoundInstance {
                 private static final Method METHOD = findMethod();
 
                 private static Method findMethod() {
-                        try {
-                                return SoundManager.class.getMethod("play", MovingSoundInstance.class);
-                        } catch (NoSuchMethodException e) {
-                                try {
-                                        return SoundManager.class.getMethod("play", net.minecraft.client.sound.SoundInstance.class);
-                                } catch (NoSuchMethodException ignored) {
-                                        return null;
-                                }
+                        Method method = SoundManagerMethodFinder.find("play", SoundInstance.class);
+
+                        if (method == null) {
+                                method = SoundManagerMethodFinder.find("play", MovingSoundInstance.class);
                         }
+
+                        return method;
                 }
 
-                private static void invoke(SoundManager manager, MovingSoundInstance instance) {
+                private static void invoke(SoundManager manager, SoundInstance instance) {
                         if (METHOD == null) {
                                 throw new IllegalStateException("No compatible SoundManager#play method found");
                         }
@@ -141,6 +153,60 @@ public interface ISoundInstance {
                         } catch (IllegalAccessException | InvocationTargetException e) {
                                 throw new RuntimeException("Failed to invoke legacy SoundManager#play", e);
                         }
+                }
+        }
+
+        final class SoundManagerMethodFinder {
+                private static final MappingResolver RESOLVER = FabricLoader.getInstance().getMappingResolver();
+                private static final String SOUND_MANAGER_CLASS = "net.minecraft.client.sound.SoundManager";
+
+                private static Method find(String namedName, Class<?>... parameterTypes) {
+                        String descriptor = getNamedMethodDescriptor(void.class, parameterTypes);
+                        String runtimeName = RESOLVER.mapMethodName("named", SOUND_MANAGER_CLASS, namedName, descriptor);
+
+                        try {
+                                Method method = SoundManager.class.getDeclaredMethod(runtimeName, parameterTypes);
+                                method.setAccessible(true);
+                                return method;
+                        } catch (NoSuchMethodException e) {
+                                return null;
+                        }
+                }
+
+                private static String getNamedMethodDescriptor(Class<?> returnType, Class<?>... parameterTypes) {
+                        StringBuilder builder = new StringBuilder("(");
+
+                        for (Class<?> parameterType : parameterTypes) {
+                                builder.append(getNamedDescriptor(parameterType));
+                        }
+
+                        builder.append(getNamedDescriptor(returnType));
+                        return builder.toString();
+                }
+
+                private static String getNamedDescriptor(Class<?> type) {
+                        if (type == void.class) {
+                                return "V";
+                        }
+
+                        if (type.isPrimitive()) {
+                                if (type == boolean.class) return "Z";
+                                if (type == byte.class) return "B";
+                                if (type == char.class) return "C";
+                                if (type == short.class) return "S";
+                                if (type == int.class) return "I";
+                                if (type == long.class) return "J";
+                                if (type == float.class) return "F";
+                                if (type == double.class) return "D";
+                        }
+
+                        if (type.isArray()) {
+                                return "[" + getNamedDescriptor(type.getComponentType());
+                        }
+
+                        String runtimeName = type.getName();
+                        String namedName = RESOLVER.unmapClassName("named", runtimeName);
+                        return "L" + namedName.replace('.', '/') + ";";
                 }
         }
 }
