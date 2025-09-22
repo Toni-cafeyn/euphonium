@@ -160,6 +160,11 @@ public interface ISoundInstance {
                 private static final MappingResolver RESOLVER = FabricLoader.getInstance().getMappingResolver();
                 private static final String SOUND_MANAGER_CLASS = "net.minecraft.client.sound.SoundManager";
 
+                static {
+                        assert find("play", SoundInstance.class) != null :
+                                "SoundManager#play(SoundInstance) not found under current mappings";
+                }
+
                 private static Method find(String namedName, Class<?>... parameterTypes) {
                         String descriptor = getNamedMethodDescriptor(void.class, parameterTypes);
                         String runtimeName = RESOLVER.mapMethodName("named", SOUND_MANAGER_CLASS, namedName, descriptor);
@@ -180,6 +185,7 @@ public interface ISoundInstance {
                                 builder.append(getNamedDescriptor(parameterType));
                         }
 
+                        builder.append(')');
                         builder.append(getNamedDescriptor(returnType));
                         return builder.toString();
                 }
