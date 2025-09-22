@@ -134,10 +134,24 @@ public interface ISoundInstance {
                 private static final Method METHOD = findMethod();
 
                 private static Method findMethod() {
-                        Method method = SoundManagerMethodFinder.find("play", SoundInstance.class);
+                        Class<?> playResultClass = SoundManagerMethodFinder.getNamedClassOrNull(
+                                "net.minecraft.client.sound.SoundSystem$PlayResult"
+                        );
+                        Class<?>[] returnTypes = playResultClass == null
+                                ? new Class<?>[]{void.class}
+                                : new Class<?>[]{void.class, playResultClass};
+                        Method method = SoundManagerMethodFinder.findReturning(
+                                "play",
+                                new Class<?>[]{SoundInstance.class},
+                                returnTypes
+                        );
 
                         if (method == null) {
-                                method = SoundManagerMethodFinder.find("play", MovingSoundInstance.class);
+                                method = SoundManagerMethodFinder.findReturning(
+                                        "play",
+                                        new Class<?>[]{MovingSoundInstance.class},
+                                        returnTypes
+                                );
                         }
 
                         return method;
@@ -161,12 +175,44 @@ public interface ISoundInstance {
                 private static final String SOUND_MANAGER_CLASS = "net.minecraft.client.sound.SoundManager";
 
                 static {
-                        assert find("play", SoundInstance.class) != null :
-                                "SoundManager#play(SoundInstance) not found under current mappings";
+                        Class<?> playResultClass = getNamedClassOrNull(
+                                "net.minecraft.client.sound.SoundSystem$PlayResult"
+                        );
+
+                        if (playResultClass != null) {
+                                assert findReturning(
+                                        "play",
+                                        new Class<?>[]{SoundInstance.class},
+                                        void.class,
+                                        playResultClass
+                                ) != null : "SoundManager#play(SoundInstance) not found under current mappings";
+                        } else {
+                                assert findReturning(
+                                        "play",
+                                        new Class<?>[]{SoundInstance.class},
+                                        void.class
+                                ) != null : "SoundManager#play(SoundInstance) not found under current mappings";
+                        }
                 }
 
                 private static Method find(String namedName, Class<?>... parameterTypes) {
-                        String descriptor = getNamedMethodDescriptor(void.class, parameterTypes);
+                        return findReturning(namedName, parameterTypes, void.class);
+                }
+
+                static Method findReturning(String namedName, Class<?>[] parameterTypes, Class<?>... returnTypes) {
+                        for (Class<?> returnType : returnTypes) {
+                                Method method = findExact(namedName, returnType, parameterTypes);
+
+                                if (method != null) {
+                                        return method;
+                                }
+                        }
+
+                        return null;
+                }
+
+                private static Method findExact(String namedName, Class<?> returnType, Class<?>... parameterTypes) {
+                        String descriptor = getNamedMethodDescriptor(returnType, parameterTypes);
                         String runtimeName = RESOLVER.mapMethodName("named", SOUND_MANAGER_CLASS, namedName, descriptor);
 
                         try {
@@ -174,6 +220,16 @@ public interface ISoundInstance {
                                 method.setAccessible(true);
                                 return method;
                         } catch (NoSuchMethodException e) {
+                                return null;
+                        }
+                }
+
+                static Class<?> getNamedClassOrNull(String namedClassName) {
+                        try {
+                                String runtimeName = RESOLVER.mapClassName("named", namedClassName);
+                                ClassLoader classLoader = SoundManager.class.getClassLoader();
+                                return Class.forName(runtimeName.replace('/', '.'), false, classLoader);
+                        } catch (ClassNotFoundException | IllegalArgumentException e) {
                                 return null;
                         }
                 }
