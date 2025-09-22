@@ -38,8 +38,8 @@ public interface ISoundInstance {
 
 	default RegistryKey<Biome> getBiomeKey(BlockPos pos) {
 		var biome = getBiome(pos);
-		return getLevel().getRegistryManager()
-			.get(RegistryKeys.BIOME)
+                return getLevel().getRegistryManager()
+                        .getOrThrow(RegistryKeys.BIOME)
 			.getKey(biome)
 			.orElse(null);
 	}
