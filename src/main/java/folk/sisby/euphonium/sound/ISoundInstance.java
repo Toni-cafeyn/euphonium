@@ -134,12 +134,7 @@ public interface ISoundInstance {
                 private static final Method METHOD = findMethod();
 
                 private static Method findMethod() {
-                        Class<?> playResultClass = SoundManagerMethodFinder.getNamedClassOrNull(
-                                "net.minecraft.client.sound.SoundSystem$PlayResult"
-                        );
-                        Class<?>[] returnTypes = playResultClass == null
-                                ? new Class<?>[]{void.class}
-                                : new Class<?>[]{void.class, playResultClass};
+                        Class<?>[] returnTypes = SoundManagerMethodFinder.getPlayReturnTypes();
                         Method method = SoundManagerMethodFinder.findReturning(
                                 "play",
                                 new Class<?>[]{SoundInstance.class},
@@ -173,26 +168,17 @@ public interface ISoundInstance {
         final class SoundManagerMethodFinder {
                 private static final MappingResolver RESOLVER = FabricLoader.getInstance().getMappingResolver();
                 private static final String SOUND_MANAGER_CLASS = "net.minecraft.client.sound.SoundManager";
+                private static final Class<?> PLAY_RESULT_CLASS = resolvePlayResultClass();
+                private static final Class<?>[] PLAY_RETURN_TYPES = buildPlayReturnTypes(PLAY_RESULT_CLASS);
 
                 static {
-                        Class<?> playResultClass = getNamedClassOrNull(
-                                "net.minecraft.client.sound.SoundSystem$PlayResult"
-                        );
+                        Class<?>[] returnTypes = getPlayReturnTypes();
 
-                        if (playResultClass != null) {
-                                assert findReturning(
-                                        "play",
-                                        new Class<?>[]{SoundInstance.class},
-                                        void.class,
-                                        playResultClass
-                                ) != null : "SoundManager#play(SoundInstance) not found under current mappings";
-                        } else {
-                                assert findReturning(
-                                        "play",
-                                        new Class<?>[]{SoundInstance.class},
-                                        void.class
-                                ) != null : "SoundManager#play(SoundInstance) not found under current mappings";
-                        }
+                        assert findReturning(
+                                "play",
+                                new Class<?>[]{SoundInstance.class},
+                                returnTypes
+                        ) != null : "SoundManager#play(SoundInstance) not found under current mappings";
                 }
 
                 private static Method find(String namedName, Class<?>... parameterTypes) {
@@ -232,6 +218,32 @@ public interface ISoundInstance {
                         } catch (ClassNotFoundException | IllegalArgumentException e) {
                                 return null;
                         }
+                }
+
+                static Class<?>[] getPlayReturnTypes() {
+                        return PLAY_RETURN_TYPES.clone();
+                }
+
+                private static Class<?> resolvePlayResultClass() {
+                        Class<?> playResultClass = getNamedClassOrNull(
+                                "net.minecraft.client.sound.SoundSystem$PlayResult"
+                        );
+
+                        if (playResultClass == null) {
+                                playResultClass = getNamedClassOrNull(
+                                        "net.minecraft.client.sound.SoundEngine$PlayResult"
+                                );
+                        }
+
+                        return playResultClass;
+                }
+
+                private static Class<?>[] buildPlayReturnTypes(@Nullable Class<?> playResultClass) {
+                        if (playResultClass == null) {
+                                return new Class<?>[]{void.class};
+                        }
+
+                        return new Class<?>[]{void.class, playResultClass};
                 }
 
                 private static String getNamedMethodDescriptor(Class<?> returnType, Class<?>... parameterTypes) {
