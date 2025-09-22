@@ -16,6 +16,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.MappingResolver;
@@ -104,25 +108,31 @@ public interface ISoundInstance {
         }
 
         final class QueueSoundMethodHolder {
-                private static final Method METHOD = findMethod();
+                private static final Map<Class<?>, Optional<Method>> METHOD_CACHE = new ConcurrentHashMap<>();
 
-                private static Method findMethod() {
-                        Method method = SoundManagerMethodFinder.find("queueSound", SoundInstance.class);
+                private static Optional<Method> resolveMethod(Class<?> managerClass) {
+                        return METHOD_CACHE.computeIfAbsent(managerClass, QueueSoundMethodHolder::findMethod);
+                }
+
+                private static Optional<Method> findMethod(Class<?> managerClass) {
+                        Method method = SoundManagerMethodFinder.find(managerClass, "queueSound", SoundInstance.class);
 
                         if (method == null) {
-                                method = SoundManagerMethodFinder.find("queueSound", MovingSoundInstance.class);
+                                method = SoundManagerMethodFinder.find(managerClass, "queueSound", MovingSoundInstance.class);
                         }
 
-                        return method;
+                        return Optional.ofNullable(method);
                 }
 
                 private static boolean invoke(SoundManager manager, SoundInstance instance) {
-                        if (METHOD == null) {
+                        Method method = resolveMethod(manager.getClass()).orElse(null);
+
+                        if (method == null) {
                                 return false;
                         }
 
                         try {
-                                METHOD.invoke(manager, instance);
+                                method.invoke(manager, instance);
                                 return true;
                         } catch (IllegalAccessException | InvocationTargetException e) {
                                 throw new RuntimeException("Failed to invoke SoundManager queue method", e);
@@ -131,11 +141,16 @@ public interface ISoundInstance {
         }
 
         final class PlaySoundMethodHolder {
-                private static final Method METHOD = findMethod();
+                private static final Map<Class<?>, Optional<Method>> METHOD_CACHE = new ConcurrentHashMap<>();
 
-                private static Method findMethod() {
+                private static Optional<Method> resolveMethod(Class<?> managerClass) {
+                        return METHOD_CACHE.computeIfAbsent(managerClass, PlaySoundMethodHolder::findMethod);
+                }
+
+                private static Optional<Method> findMethod(Class<?> managerClass) {
                         Class<?>[] returnTypes = SoundManagerMethodFinder.getPlayReturnTypes();
                         Method method = SoundManagerMethodFinder.findReturning(
+                                managerClass,
                                 "play",
                                 new Class<?>[]{SoundInstance.class},
                                 returnTypes
@@ -143,22 +158,25 @@ public interface ISoundInstance {
 
                         if (method == null) {
                                 method = SoundManagerMethodFinder.findReturning(
+                                        managerClass,
                                         "play",
                                         new Class<?>[]{MovingSoundInstance.class},
                                         returnTypes
                                 );
                         }
 
-                        return method;
+                        return Optional.ofNullable(method);
                 }
 
                 private static void invoke(SoundManager manager, SoundInstance instance) {
-                        if (METHOD == null) {
+                        Method method = resolveMethod(manager.getClass()).orElse(null);
+
+                        if (method == null) {
                                 throw new IllegalStateException("No compatible SoundManager#play method found");
                         }
 
                         try {
-                                METHOD.invoke(manager, instance);
+                                method.invoke(manager, instance);
                         } catch (IllegalAccessException | InvocationTargetException e) {
                                 throw new RuntimeException("Failed to invoke legacy SoundManager#play", e);
                         }
@@ -167,7 +185,6 @@ public interface ISoundInstance {
 
         final class SoundManagerMethodFinder {
                 private static final MappingResolver RESOLVER = FabricLoader.getInstance().getMappingResolver();
-                private static final String SOUND_MANAGER_CLASS = "net.minecraft.client.sound.SoundManager";
                 private static final Class<?> PLAY_RESULT_CLASS = resolvePlayResultClass();
                 private static final Class<?>[] PLAY_RETURN_TYPES = buildPlayReturnTypes(PLAY_RESULT_CLASS);
 
@@ -175,39 +192,45 @@ public interface ISoundInstance {
                         Class<?>[] returnTypes = getPlayReturnTypes();
 
                         assert findReturning(
+                                SoundManager.class,
                                 "play",
                                 new Class<?>[]{SoundInstance.class},
                                 returnTypes
                         ) != null : "SoundManager#play(SoundInstance) not found under current mappings";
                 }
 
-                private static Method find(String namedName, Class<?>... parameterTypes) {
-                        return findReturning(namedName, parameterTypes, void.class);
+                private static Method find(Class<?> ownerClass, String namedName, Class<?>... parameterTypes) {
+                        return findReturning(ownerClass, namedName, parameterTypes, void.class);
                 }
 
-                static Method findReturning(String namedName, Class<?>[] parameterTypes, Class<?>... returnTypes) {
-                        for (Class<?> returnType : returnTypes) {
-                                Method method = findExact(namedName, returnType, parameterTypes);
+                static Method findReturning(Class<?> ownerClass, String namedName, Class<?>[] parameterTypes, Class<?>... returnTypes) {
+                        for (Class<?> current = ownerClass; current != null; current = current.getSuperclass()) {
+                                for (Class<?> returnType : returnTypes) {
+                                        Method method = findExact(current, namedName, returnType, parameterTypes);
 
-                                if (method != null) {
-                                        return method;
+                                        if (method != null) {
+                                                return method;
+                                        }
                                 }
                         }
 
                         return null;
                 }
 
-                private static Method findExact(String namedName, Class<?> returnType, Class<?>... parameterTypes) {
+                private static Method findExact(Class<?> ownerClass, String namedName, Class<?> returnType, Class<?>... parameterTypes) {
                         String descriptor = getNamedMethodDescriptor(returnType, parameterTypes);
-                        String runtimeName = RESOLVER.mapMethodName("named", SOUND_MANAGER_CLASS, namedName, descriptor);
+                        List<String> candidateNames = getRuntimeMethodNames(ownerClass, namedName, descriptor);
 
-                        try {
-                                Method method = SoundManager.class.getDeclaredMethod(runtimeName, parameterTypes);
-                                method.setAccessible(true);
-                                return method;
-                        } catch (NoSuchMethodException e) {
-                                return null;
+                        for (String methodName : candidateNames) {
+                                try {
+                                        Method method = ownerClass.getDeclaredMethod(methodName, parameterTypes);
+                                        method.setAccessible(true);
+                                        return method;
+                                } catch (NoSuchMethodException ignored) {
+                                }
                         }
+
+                        return null;
                 }
 
                 static Class<?> getNamedClassOrNull(String namedClassName) {
@@ -279,8 +302,46 @@ public interface ISoundInstance {
                         }
 
                         String runtimeName = type.getName();
-                        String namedName = RESOLVER.unmapClassName("named", runtimeName);
+                        String namedName;
+
+                        try {
+                                namedName = RESOLVER.unmapClassName("named", runtimeName);
+                        } catch (IllegalArgumentException e) {
+                                namedName = runtimeName;
+                        }
+
                         return "L" + namedName.replace('.', '/') + ";";
+                }
+
+                private static List<String> getRuntimeMethodNames(Class<?> ownerClass, String namedName, String descriptor) {
+                        String runtimeName = namedName;
+                        String namedOwner = getNamedClassName(ownerClass);
+
+                        if (namedOwner != null) {
+                                try {
+                                        String mappedName = RESOLVER.mapMethodName("named", namedOwner, namedName, descriptor);
+
+                                        if (mappedName != null) {
+                                                runtimeName = mappedName;
+                                        }
+                                } catch (IllegalArgumentException ignored) {
+                                }
+                        }
+
+                        if (runtimeName.equals(namedName)) {
+                                return List.of(namedName);
+                        }
+
+                        return List.of(runtimeName, namedName);
+                }
+
+                @Nullable
+                private static String getNamedClassName(Class<?> ownerClass) {
+                        try {
+                                return RESOLVER.unmapClassName("named", ownerClass.getName());
+                        } catch (IllegalArgumentException e) {
+                                return null;
+                        }
                 }
         }
 }
